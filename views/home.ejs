@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Javalorant Webmail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mb-4">📬 Javalorant Mail (<%= user %>)</h2>
+
+        <% if (typeof locals.msg !=='undefined' ) { %>
+            <div class="alert alert-success">
+                <%= msg %>
+            </div>
+            <% } %>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card p-3">
+                            <h4>Soạn thư</h4>
+                            <form action="/send" method="POST">
+                                <div class="mb-2">
+                                    <input type="email" name="to" class="form-control" placeholder="Gửi tới..."
+                                        required>
+                                </div>
+                                <div class="mb-2">
+                                    <input type="text" name="subject" class="form-control" placeholder="Tiêu đề"
+                                        required>
+                                </div>
+                                <div class="mb-2">
+                                    <textarea name="message" class="form-control" rows="5"
+                                        placeholder="Nội dung..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Gửi ngay 🚀</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="card p-3">
+                            <h4>Hộp thư đến (Inbox)</h4>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Từ</th>
+                                        <th>Tiêu đề</th>
+                                        <th>Ngày</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% emails.forEach(function(email) { %>
+                                        <tr onclick="window.location='/read/<%= email.id %>'" style="cursor:pointer">
+                                            <td>
+                                                <%= email.from.replace(/<.*>/, '') %>
+                                            </td>
+                                            <td>
+                                                <%= email.subject %>
+                                            </td>
+                                            <td>
+                                                <%= new Date(email.date).toLocaleDateString() %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    </div>
+</body>
+
+</html>
