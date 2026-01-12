@@ -243,6 +243,13 @@ app.get('/api/emails', async (req, res) => {
     }
 });
 
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
+});
+
 app.listen(9200, () => {
     console.log('🚀 Javalorant Mail v3 (Secure) running at http://localhost:9200');
 });
