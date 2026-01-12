@@ -4,7 +4,7 @@ const config = {
     imap: {
         user: 'admin@javalorant.xyz',
         password: 'Nekkochan0x0007@!',
-        host: 'localhost',
+        host: '172.20.0.2',
         port: 993,
         tls: true,
         tlsOptions: { rejectUnauthorized: false },
