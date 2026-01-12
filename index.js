@@ -126,6 +126,6 @@ app.post('/send', async (req, res) => {
     }
 });
 
-app.listen(9090, () => {
-    console.log('Webmail đang chạy tại http://localhost:9090');
+app.listen(9200, () => {
+    console.log('Webmail đang chạy tại http://localhost:9200');
 });
