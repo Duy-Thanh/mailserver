@@ -4,17 +4,17 @@ const config = {
     imap: {
         user: 'admin@javalorant.xyz',
         password: 'Nekkochan0x0007@!',
-        host: '172.20.0.2', // Giữ nguyên IP nội bộ này
-        port: 143,          // <--- ĐỔI SANG 143
-        tls: false,         // <--- TẮT SSL
+        host: '127.0.0.1',  // <--- Về lại nhà
+        port: 143,          // Vẫn dùng 143 (Non-SSL)
+        tls: false,
         authTimeout: 10000
     }
 };
 
-console.log("Dang ket noi thu den IMAP 143 (No SSL)...");
+console.log("Dang ket noi thu den 127.0.0.1:143...");
 
 imaps.connect(config).then(connection => {
-    console.log(">>> KẾT NỐI THÀNH CÔNG! (Đường 143 thông thoáng)");
+    console.log(">>> KẾT NỐI THÀNH CÔNG! (Về nhà là nhất)");
     return connection.end();
 }).catch(err => {
     console.log(">>> KẾT NỐI THẤT BẠI!");
