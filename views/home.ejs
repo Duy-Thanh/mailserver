@@ -58,17 +58,23 @@
                     data-bs-target="#composeModal">
                     <i class="fas fa-plus"></i> Compose
                 </button>
-                <div class="list-group list-group-flush">
-                    <a class="nav-link active" href="#" onclick="loadEmails('INBOX')">
-                        <i class="fas fa-inbox"></i> Inbox
-                    </a>
-                    <a class="nav-link" href="#" onclick="loadEmails('Sent')">
-                        <i class="fas fa-paper-plane"></i> Sent
-                    </a>
-                    <a class="nav-link" href="#" onclick="loadEmails('Trash')">
-                        <i class="fas fa-trash"></i> Trash
-                    </a>
-                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="loadEmails('INBOX')">
+                            <i class="fas fa-inbox"></i> Inbox
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="loadEmails('Sent')">
+                            <i class="fas fa-paper-plane"></i> Sent
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="loadEmails('Trash')">
+                            <i class="fas fa-trash"></i> Trash
+                        </a>
+                    </li>
+                </ul>
             </div>
 
             <div class="col-md-10 p-4">
