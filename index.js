@@ -201,6 +201,48 @@ app.post('/send', requireLogin, async (req, res) => {
     }
 });
 
+app.get('/api/emails', async (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Chưa đăng nhập!' });
+
+    const boxName = req.query.box || 'INBOX'; // <--- CẢI TIẾN: Mặc định là INBOX, nếu có request thì lấy theo box
+    const config = getImapConfig(req.session.user, req.session.pass); // Hàm config cũ của mày
+
+    try {
+        const connection = await imaps.connect(config);
+
+        // Mở đúng cái hộp cần mở (INBOX, Sent, Trash...)
+        await connection.openBox(boxName);
+
+        const searchCriteria = ['ALL'];
+        const fetchOptions = {
+            bodies: ['HEADER', 'TEXT'],
+            markSeen: false,
+            struct: true
+        };
+
+        const messages = await connection.search(searchCriteria, fetchOptions);
+
+        // Xử lý dữ liệu trả về (Map lại cho đẹp)
+        const emails = messages.map(msg => {
+            const header = msg.parts.filter(part => part.which === 'HEADER')[0].body;
+            return {
+                id: msg.attributes.uid,
+                from: header.from[0],
+                to: header.to ? header.to[0] : 'Unknown', // Lấy thêm To để hiển thị cho mục Sent
+                subject: header.subject[0],
+                date: header.date[0],
+                box: boxName // Trả về để Frontend biết đang ở đâu
+            };
+        });
+
+        connection.end();
+        res.json(emails.reverse()); // Đảo ngược để mail mới nhất lên đầu
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Lỗi lấy mail: ' + err.message });
+    }
+});
+
 app.listen(9200, () => {
     console.log('🚀 Javalorant Mail v3 (Secure) running at http://localhost:9200');
 });

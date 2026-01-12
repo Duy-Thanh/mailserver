@@ -59,12 +59,15 @@
                     <i class="fas fa-plus"></i> Compose
                 </button>
                 <div class="list-group list-group-flush">
-                    <a href="/" class="list-group-item list-group-item-action active border-0 rounded-end"><i
-                            class="fas fa-inbox me-2"></i> Inbox</a>
-                    <a href="#" class="list-group-item list-group-item-action border-0 rounded-end text-muted"><i
-                            class="fas fa-paper-plane me-2"></i> Sent (Fake)</a>
-                    <a href="#" class="list-group-item list-group-item-action border-0 rounded-end text-muted"><i
-                            class="fas fa-trash me-2"></i> Trash</a>
+                    <a class="nav-link active" href="#" onclick="loadEmails('INBOX')">
+                        <i class="fas fa-inbox"></i> Inbox
+                    </a>
+                    <a class="nav-link" href="#" onclick="loadEmails('Sent')">
+                        <i class="fas fa-paper-plane"></i> Sent
+                    </a>
+                    <a class="nav-link" href="#" onclick="loadEmails('Trash')">
+                        <i class="fas fa-trash"></i> Trash
+                    </a>
                 </div>
             </div>
 
@@ -144,6 +147,41 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function loadEmails(boxName) {
+            // 1. Cập nhật giao diện (Active cái menu vừa bấm)
+            $('.nav-link').removeClass('active');
+            event.target.closest('.nav-link').classList.add('active');
+
+            // 2. Hiện loading quay quay cho ngầu (Optional)
+            $('#email-list').html('<div class="text-center mt-5"><i class="fas fa-spinner fa-spin fa-3x"></i></div>');
+
+            // 3. Gọi API Backend vừa sửa
+            $.get('/api/emails?box=' + boxName, function (data) {
+                let html = '';
+                if (data.length === 0) {
+                    html = '<div class="p-3 text-center">Trống trơn!</div>';
+                } else {
+                    data.forEach(mail => {
+                        // Logic: Nếu là hòm Sent thì hiện người nhận (To), còn lại hiện người gửi (From)
+                        let contact = (boxName === 'Sent') ? `To: ${mail.to}` : mail.from;
+
+                        html += `
+                <div class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">${contact}</h5>
+                        <small>${new Date(mail.date).toLocaleString()}</small>
+                    </div>
+                    <p class="mb-1">${mail.subject}</p>
+                </div>`;
+                    });
+                }
+                $('#email-list').html(html); // #email-list là cái div chứa danh sách mail
+            }).fail(function () {
+                alert('Lỗi đéo lấy được mail!');
+            });
+        }
+    </script>
 </body>
 
 </html>
