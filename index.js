@@ -1,4 +1,4 @@
-require('dotenv').config(); // Gọi thằng bảo vệ
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
@@ -8,7 +8,7 @@ const simpleParser = require('mailparser').simpleParser;
 const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public')); // Để chứa CSS/JS nếu cần
+app.use(express.static('public'));
 
 const config = {
     imap: {
@@ -28,13 +28,12 @@ const config = {
     }
 };
 
-// 1. TRANG CHỦ (CÓ PHÂN TRANG)
+// 1. HOME PAGE
 app.get('/', async (req, res) => {
     try {
         const connection = await imaps.connect(config);
         await connection.openBox('INBOX');
 
-        // Logic phân trang đơn giản
         const page = parseInt(req.query.page) || 1;
         const limit = 10;
 
@@ -42,7 +41,6 @@ app.get('/', async (req, res) => {
         const fetchOptions = { bodies: ['HEADER'], struct: true, markSeen: false };
         let messages = await connection.search(searchCriteria, fetchOptions);
 
-        // Đảo ngược để thấy mail mới nhất
         messages.reverse();
 
         const totalEmails = messages.length;
@@ -72,7 +70,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-// 2. ĐỌC MAIL & TRẢ LỜI
+// 2. READ MAIL
 app.get('/read/:uid', async (req, res) => {
     try {
         const connection = await imaps.connect(config);
@@ -88,22 +86,20 @@ app.get('/read/:uid', async (req, res) => {
             const idHeader = "Imap-Id: " + id + "\r\n";
 
             const parsed = await simpleParser(idHeader + all[0].body);
-
-            // Xử lý file đính kèm (Hiển thị tên thôi)
             const attachments = parsed.attachments ? parsed.attachments.map(att => att.filename) : [];
 
             connection.end();
             res.render('read', { mail: parsed, uid: id, attachments });
         } else {
             connection.end();
-            res.redirect('/?msg=Không tìm thấy mail');
+            res.redirect('/?msg=Email not found');
         }
     } catch (err) {
-        res.send("Lỗi: " + err);
+        res.send("Error: " + err);
     }
 });
 
-// 3. GỬI MAIL
+// 3. SEND MAIL
 app.post('/send', async (req, res) => {
     const transporter = nodemailer.createTransport({
         host: config.smtp.host,
@@ -118,14 +114,14 @@ app.post('/send', async (req, res) => {
             from: `"${config.smtp.user}" <${config.smtp.user}>`,
             to: req.body.to,
             subject: req.body.subject,
-            html: req.body.message.replace(/\n/g, '<br>') // Convert xuống dòng thành HTML
+            html: req.body.message.replace(/\n/g, '<br>')
         });
-        res.redirect('/?msg=Đã gửi thư thành công! 🚀');
+        res.redirect('/?msg=Email sent successfully! 🚀');
     } catch (err) {
-        res.send("Lỗi gửi mail: " + err);
+        res.send("Send Error: " + err);
     }
 });
 
 app.listen(9200, () => {
-    console.log('🚀 Javalorant Mail v2 chạy tại http://localhost:9200');
+    console.log('🚀 Javalorant Mail (English) is running at http://localhost:3000');
 });

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -53,13 +53,15 @@
             <div class="col-md-2 sidebar p-3">
                 <button class="btn btn-primary w-100 mb-3 rounded-pill py-2" data-bs-toggle="modal"
                     data-bs-target="#composeModal">
-                    <i class="fas fa-plus"></i> Soạn thư
+                    <i class="fas fa-plus"></i> Compose
                 </button>
                 <div class="list-group list-group-flush">
                     <a href="/" class="list-group-item list-group-item-action active border-0 rounded-end"><i
-                            class="fas fa-inbox me-2"></i> Hộp thư đến</a>
+                            class="fas fa-inbox me-2"></i> Inbox</a>
                     <a href="#" class="list-group-item list-group-item-action border-0 rounded-end text-muted"><i
-                            class="fas fa-paper-plane me-2"></i> Đã gửi (Fake)</a>
+                            class="fas fa-paper-plane me-2"></i> Sent (Fake)</a>
+                    <a href="#" class="list-group-item list-group-item-action border-0 rounded-end text-muted"><i
+                            class="fas fa-trash me-2"></i> Trash</a>
                 </div>
             </div>
 
@@ -81,7 +83,7 @@
                                             class="btn btn-outline-secondary btn-sm"><i
                                                 class="fas fa-chevron-left"></i></a>
                                         <% } %>
-                                            <span class="mx-2 text-muted small">Trang <%= currentPage %> / <%=
+                                            <span class="mx-2 text-muted small">Page <%= currentPage %> of <%=
                                                         totalPages %></span>
                                             <% if (currentPage < totalPages) { %>
                                                 <a href="/?page=<%= currentPage + 1 %>"
@@ -100,11 +102,11 @@
                                                 <%= email.from.replace(/<.*>/, '') %>
                                             </span>
                                             <small class="text-muted">
-                                                <%= new Date(email.date).toLocaleDateString() %>
+                                                <%= new Date(email.date).toLocaleDateString('en-US') %>
                                             </small>
                                         </div>
                                         <p class="mb-1 text-truncate text-dark">
-                                            <%= email.subject || '(Không có tiêu đề)' %>
+                                            <%= email.subject || '(No Subject)' %>
                                         </p>
                                     </div>
                                     <% }); %>
@@ -118,18 +120,19 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-light">
-                    <h5 class="modal-title">Soạn thư mới</h5>
+                    <h5 class="modal-title">New Message</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="/send" method="POST">
                     <div class="modal-body">
-                        <input type="email" name="to" class="form-control mb-2" placeholder="Người nhận" required>
-                        <input type="text" name="subject" class="form-control mb-2" placeholder="Tiêu đề" required>
-                        <textarea name="message" class="form-control" rows="10" placeholder="Nội dung..."></textarea>
+                        <input type="email" name="to" class="form-control mb-2" placeholder="To" required>
+                        <input type="text" name="subject" class="form-control mb-2" placeholder="Subject" required>
+                        <textarea name="message" class="form-control" rows="10"
+                            placeholder="Message content..."></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                        <button type="submit" class="btn btn-primary">Gửi thư <i
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Send <i
                                 class="fas fa-paper-plane ms-1"></i></button>
                     </div>
                 </form>

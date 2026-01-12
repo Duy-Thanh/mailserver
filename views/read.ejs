@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <title>
@@ -17,7 +17,7 @@
 
 <body>
     <div class="container mt-3">
-        <a href="/" class="btn btn-outline-secondary mb-3"><i class="fas fa-arrow-left"></i> Quay lại Inbox</a>
+        <a href="/" class="btn btn-outline-secondary mb-3"><i class="fas fa-arrow-left"></i> Back to Inbox</a>
 
         <div class="card shadow-sm border-0">
             <div class="card-header bg-white p-4 pb-0 border-0">
@@ -34,12 +34,12 @@
                             <%= mail.from.text %>
                         </div>
                         <div class="text-muted small">
-                            <%= new Date(mail.date).toLocaleString() %>
+                            <%= new Date(mail.date).toLocaleString('en-US') %>
                         </div>
                     </div>
                     <div class="ms-auto">
                         <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#replyModal"><i
-                                class="fas fa-reply"></i> Trả lời</button>
+                                class="fas fa-reply"></i> Reply</button>
                     </div>
                 </div>
             </div>
@@ -53,8 +53,8 @@
 
                 <% if (attachments.length> 0) { %>
                     <div class="mt-4 pt-3 border-top">
-                        <h6 class="text-muted"><i class="fas fa-paperclip"></i> File đính kèm (<%= attachments.length %>
-                                ):</h6>
+                        <h6 class="text-muted"><i class="fas fa-paperclip"></i> Attachments (<%= attachments.length %>):
+                        </h6>
                         <% attachments.forEach(file=> { %>
                             <span class="badge bg-light text-dark border p-2 me-1">
                                 <%= file %>
@@ -70,7 +70,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Trả lời: <%= mail.from.value[0].address %>
+                    <h5 class="modal-title">Reply to: <%= mail.from.value[0].address %>
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -80,16 +80,16 @@
                         <input type="hidden" name="subject" value="Re: <%= mail.subject %>">
 
                         <div class="mb-3">
-                            <label class="form-label text-muted">Đến: <strong>
+                            <label class="form-label text-muted">To: <strong>
                                     <%= mail.from.text %>
                                 </strong></label>
                         </div>
-                        <textarea name="message" class="form-control" rows="8"
-                            placeholder="Viết câu trả lời của mày vào đây..." autofocus></textarea>
+                        <textarea name="message" class="form-control" rows="8" placeholder="Write your reply here..."
+                            autofocus></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary">Gửi trả lời</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Send Reply</button>
                     </div>
                 </form>
             </div>
