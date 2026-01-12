@@ -141,13 +141,30 @@
                     data.forEach(mail => {
                         let contact = (boxName === 'Sent') ? `To: ${mail.to}` : mail.from;
                         html += `
-                        <div class="list-group-item email-item p-3 ${mail.seen ? 'seen' : 'unseen'}" onclick="window.location='/read/${mail.id}'">
-                            <div class="d-flex w-100 justify-content-between">
-                                <span class="mb-1 text-truncate" style="max-width: 250px;">${contact}</span>
-                                <small class="text-muted">${new Date(mail.date).toLocaleTimeString()}</small>
+                        <div class="list-group-item email-item p-3 ${mail.seen ? 'seen' : 'unseen'} d-flex justify-content-between align-items-center">
+                            <div onclick="window.location='/read/${mail.id}'" class="flex-grow-1">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <span class="mb-1 text-truncate" style="max-width: 250px;">${contact}</span>
+                                    <small class="text-muted">${new Date(mail.date).toLocaleTimeString()}</small>
+                                </div>
+                                <p class="mb-1 text-truncate text-dark">${mail.subject || '(No Subject)'}</p>
                             </div>
-                            <p class="mb-1 text-truncate text-dark">${mail.subject || '(No Subject)'}</p>
+                            <button class="btn btn-link text-danger p-0 ms-3" onclick="trashEmail(${mail.id}, event)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>`;
+                    });
+                }
+
+                function trashEmail(uid, event) {
+                    event.stopPropagation(); // Không cho nó nhảy vào trang đọc mail
+                    if (!confirm('Mày chắc chắn muốn vứt cái này vào sọt rác chứ?')) return;
+
+                    $.post('/api/emails/move-to-trash', { uid: uid }, function (res) {
+                        console.log(res.message);
+                        loadEmails(currentBox); // Load lại phát cho nó biến mất luôn
+                    }).fail(function (err) {
+                        alert('Lỗi đéo xóa được: ' + err.responseJSON.error);
                     });
                 }
                 $('#email-list').html(html);

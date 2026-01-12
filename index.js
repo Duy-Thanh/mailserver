@@ -243,6 +243,25 @@ app.get('/api/emails', async (req, res) => {
     }
 });
 
+app.post('/api/emails/move-to-trash', async (req, res) => {
+    if (!req.session.user) return res.status(401).send('Chưa đăng nhập!');
+    const { uid } = req.body;
+    const config = getImapConfig(req.session.user, req.session.pass);
+
+    try {
+        const connection = await imaps.connect(config);
+        await connection.openBox('INBOX');
+
+        // Di chuyển UID này sang hòm Trash
+        await connection.moveMessage(uid, 'Trash');
+
+        connection.end();
+        res.json({ success: true, message: 'Đã tống khứ vào sọt rác!' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
     res.set('Pragma', 'no-cache');
