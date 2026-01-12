@@ -1,80 +1,143 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 
 <head>
-    <title>Javalorant Webmail</title>
+    <meta charset="UTF-8">
+    <title>Javalorant Inbox</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            background: #f0f2f5;
-            padding: 20px;
+            background: #f6f8fc;
+        }
+
+        .sidebar {
+            height: 100vh;
+            background: white;
+            border-right: 1px solid #eee;
+        }
+
+        .email-item {
+            cursor: pointer;
+            transition: 0.2s;
+            border-bottom: 1px solid #eee;
+        }
+
+        .email-item:hover {
+            background: #f1f3f4;
+        }
+
+        .seen {
+            opacity: 0.7;
+            background: #fafafa;
+        }
+
+        .unseen {
+            font-weight: bold;
+            background: white;
+            border-left: 3px solid #0d6efd;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h2 class="mb-4">📬 Javalorant Mail (<%= user %>)</h2>
+    <nav class="navbar navbar-light bg-white border-bottom px-4">
+        <a class="navbar-brand fw-bold text-primary" href="/"><i class="fas fa-paper-plane"></i> Javalorant Mail</a>
+        <span class="text-muted small">
+            <%= user %>
+        </span>
+    </nav>
 
-        <% if (typeof locals.msg !=='undefined' ) { %>
-            <div class="alert alert-success">
-                <%= msg %>
-            </div>
-            <% } %>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card p-3">
-                            <h4>Soạn thư</h4>
-                            <form action="/send" method="POST">
-                                <div class="mb-2">
-                                    <input type="email" name="to" class="form-control" placeholder="Gửi tới..."
-                                        required>
-                                </div>
-                                <div class="mb-2">
-                                    <input type="text" name="subject" class="form-control" placeholder="Tiêu đề"
-                                        required>
-                                </div>
-                                <div class="mb-2">
-                                    <textarea name="message" class="form-control" rows="5"
-                                        placeholder="Nội dung..."></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100">Gửi ngay 🚀</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="col-md-8">
-                        <div class="card p-3">
-                            <h4>Hộp thư đến (Inbox)</h4>
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Từ</th>
-                                        <th>Tiêu đề</th>
-                                        <th>Ngày</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% emails.forEach(function(email) { %>
-                                        <tr onclick="window.location='/read/<%= email.id %>'" style="cursor:pointer">
-                                            <td>
-                                                <%= email.from.replace(/<.*>/, '') %>
-                                            </td>
-                                            <td>
-                                                <%= email.subject %>
-                                            </td>
-                                            <td>
-                                                <%= new Date(email.date).toLocaleDateString() %>
-                                            </td>
-                                        </tr>
-                                        <% }); %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 sidebar p-3">
+                <button class="btn btn-primary w-100 mb-3 rounded-pill py-2" data-bs-toggle="modal"
+                    data-bs-target="#composeModal">
+                    <i class="fas fa-plus"></i> Soạn thư
+                </button>
+                <div class="list-group list-group-flush">
+                    <a href="/" class="list-group-item list-group-item-action active border-0 rounded-end"><i
+                            class="fas fa-inbox me-2"></i> Hộp thư đến</a>
+                    <a href="#" class="list-group-item list-group-item-action border-0 rounded-end text-muted"><i
+                            class="fas fa-paper-plane me-2"></i> Đã gửi (Fake)</a>
                 </div>
+            </div>
+
+            <div class="col-md-10 p-4">
+                <% if (typeof msg !=='undefined' && msg) { %>
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <%= msg %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <% } %>
+
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                                <h5 class="mb-0 text-secondary"><i class="fas fa-inbox"></i> Inbox</h5>
+
+                                <div>
+                                    <% if (currentPage> 1) { %>
+                                        <a href="/?page=<%= currentPage - 1 %>"
+                                            class="btn btn-outline-secondary btn-sm"><i
+                                                class="fas fa-chevron-left"></i></a>
+                                        <% } %>
+                                            <span class="mx-2 text-muted small">Trang <%= currentPage %> / <%=
+                                                        totalPages %></span>
+                                            <% if (currentPage < totalPages) { %>
+                                                <a href="/?page=<%= currentPage + 1 %>"
+                                                    class="btn btn-outline-secondary btn-sm"><i
+                                                        class="fas fa-chevron-right"></i></a>
+                                                <% } %>
+                                </div>
+                            </div>
+
+                            <div class="list-group list-group-flush">
+                                <% emails.forEach(function(email) { %>
+                                    <div class="list-group-item email-item p-3 <%= email.seen ? 'seen' : 'unseen' %>"
+                                        onclick="window.location='/read/<%= email.id %>'">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <span class="mb-1 text-truncate" style="max-width: 200px;">
+                                                <%= email.from.replace(/<.*>/, '') %>
+                                            </span>
+                                            <small class="text-muted">
+                                                <%= new Date(email.date).toLocaleDateString() %>
+                                            </small>
+                                        </div>
+                                        <p class="mb-1 text-truncate text-dark">
+                                            <%= email.subject || '(Không có tiêu đề)' %>
+                                        </p>
+                                    </div>
+                                    <% }); %>
+                            </div>
+                        </div>
+            </div>
+        </div>
     </div>
+
+    <div class="modal fade" id="composeModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title">Soạn thư mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="/send" method="POST">
+                    <div class="modal-body">
+                        <input type="email" name="to" class="form-control mb-2" placeholder="Người nhận" required>
+                        <input type="text" name="subject" class="form-control mb-2" placeholder="Tiêu đề" required>
+                        <textarea name="message" class="form-control" rows="10" placeholder="Nội dung..."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Gửi thư <i
+                                class="fas fa-paper-plane ms-1"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
