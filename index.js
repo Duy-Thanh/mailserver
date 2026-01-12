@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const imaps = require('imap-simple');
@@ -10,28 +11,76 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-const config = {
-    imap: {
-        user: process.env.MAIL_USER,
-        password: process.env.MAIL_PASS,
-        host: process.env.MAIL_HOST,
-        port: process.env.IMAP_PORT,
-        tls: true,
-        tlsOptions: { rejectUnauthorized: false },
-        authTimeout: 3000
-    },
-    smtp: {
-        host: process.env.MAIL_HOST,
-        port: process.env.SMTP_PORT,
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
+// CẤU HÌNH SESSION (Để nhớ đăng nhập)
+app.use(session({
+    secret: 'javalorant_secret_key',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 30 * 60 * 1000 } // Tự logout sau 30 phút
+}));
+
+// MIDDLEWARE KIỂM TRA ĐĂNG NHẬP
+const requireLogin = (req, res, next) => {
+    if (!req.session.user) {
+        return res.redirect('/login');
     }
+    next();
 };
 
-// 1. HOME PAGE
-app.get('/', async (req, res) => {
+// CẤU HÌNH IMAP/SMTP ĐỘNG THEO USER
+const getImapConfig = (user, pass) => ({
+    imap: {
+        user: user,
+        password: pass,
+        host: process.env.MAIL_HOST || 'localhost',
+        port: process.env.IMAP_PORT || 993,
+        tls: true,
+        tlsOptions: { rejectUnauthorized: false },
+        authTimeout: 5000
+    }
+});
+
+const getSmtpTransport = (user, pass) => nodemailer.createTransport({
+    host: process.env.MAIL_HOST || 'localhost',
+    port: process.env.SMTP_PORT || 587,
+    secure: false,
+    auth: { user, pass },
+    tls: { rejectUnauthorized: false }
+});
+
+// --- ROUTES ---
+
+// 1. LOGIN PAGE
+app.get('/login', (req, res) => {
+    res.render('login', { error: null });
+});
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    // Thử kết nối IMAP để check pass
     try {
-        const connection = await imaps.connect(config);
+        const connection = await imaps.connect(getImapConfig(email, password));
+        await connection.end();
+
+        // Nếu ok thì lưu session
+        req.session.user = email;
+        req.session.pass = password;
+        res.redirect('/');
+    } catch (err) {
+        res.render('login', { error: "Login failed! Check email/password." });
+    }
+});
+
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/login');
+});
+
+// 2. HOME PAGE (INBOX)
+app.get('/', requireLogin, async (req, res) => {
+    try {
+        const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
         await connection.openBox('INBOX');
 
         const page = parseInt(req.query.page) || 1;
@@ -60,7 +109,7 @@ app.get('/', async (req, res) => {
         connection.end();
         res.render('home', {
             emails,
-            user: process.env.MAIL_USER,
+            user: req.session.user,
             currentPage: page,
             totalPages,
             msg: req.query.msg
@@ -70,10 +119,10 @@ app.get('/', async (req, res) => {
     }
 });
 
-// 2. READ MAIL
-app.get('/read/:uid', async (req, res) => {
+// 3. READ MAIL & DOWNLOAD ATTACHMENT
+app.get('/read/:uid', requireLogin, async (req, res) => {
     try {
-        const connection = await imaps.connect(config);
+        const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
         await connection.openBox('INBOX');
 
         const searchCriteria = [['UID', req.params.uid]];
@@ -86,7 +135,13 @@ app.get('/read/:uid', async (req, res) => {
             const idHeader = "Imap-Id: " + id + "\r\n";
 
             const parsed = await simpleParser(idHeader + all[0].body);
-            const attachments = parsed.attachments ? parsed.attachments.map(att => att.filename) : [];
+
+            // Xử lý thông tin file đính kèm để hiển thị link download
+            const attachments = parsed.attachments ? parsed.attachments.map(att => ({
+                filename: att.filename,
+                size: (att.size / 1024).toFixed(1) + ' KB',
+                downloadLink: `/download/${id}/${att.filename}` // Link tải
+            })) : [];
 
             connection.end();
             res.render('read', { mail: parsed, uid: id, attachments });
@@ -99,19 +154,43 @@ app.get('/read/:uid', async (req, res) => {
     }
 });
 
-// 3. SEND MAIL
-app.post('/send', async (req, res) => {
-    const transporter = nodemailer.createTransport({
-        host: config.smtp.host,
-        port: config.smtp.port,
-        secure: false,
-        auth: { user: config.smtp.user, pass: config.smtp.pass },
-        tls: { rejectUnauthorized: false }
-    });
+// ROUTE DOWNLOAD FILE
+app.get('/download/:uid/:filename', requireLogin, async (req, res) => {
+    try {
+        const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
+        await connection.openBox('INBOX');
+
+        const searchCriteria = [['UID', req.params.uid]];
+        const fetchOptions = { bodies: [''], markSeen: false };
+        const messages = await connection.search(searchCriteria, fetchOptions);
+
+        if (messages.length > 0) {
+            const all = messages[0].parts.filter(part => part.which === '');
+            const parsed = await simpleParser(all[0].body);
+
+            const file = parsed.attachments.find(att => att.filename === req.params.filename);
+
+            if (file) {
+                res.setHeader('Content-disposition', 'attachment; filename=' + file.filename);
+                res.setHeader('Content-type', file.contentType);
+                res.send(file.content); // Trả về nội dung file
+            } else {
+                res.send("File not found!");
+            }
+        }
+        connection.end();
+    } catch (err) {
+        res.send("Error downloading: " + err);
+    }
+});
+
+// 4. SEND MAIL
+app.post('/send', requireLogin, async (req, res) => {
+    const transporter = getSmtpTransport(req.session.user, req.session.pass);
 
     try {
         await transporter.sendMail({
-            from: `"${config.smtp.user}" <${config.smtp.user}>`,
+            from: `"${req.session.user}" <${req.session.user}>`,
             to: req.body.to,
             subject: req.body.subject,
             html: req.body.message.replace(/\n/g, '<br>')
@@ -123,5 +202,5 @@ app.post('/send', async (req, res) => {
 });
 
 app.listen(9200, () => {
-    console.log('🚀 Javalorant Mail (English) is running at http://localhost:3000');
+    console.log('🚀 Javalorant Mail v3 (Secure) running at http://localhost:9200');
 });

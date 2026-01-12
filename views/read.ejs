@@ -56,9 +56,11 @@
                         <h6 class="text-muted"><i class="fas fa-paperclip"></i> Attachments (<%= attachments.length %>):
                         </h6>
                         <% attachments.forEach(file=> { %>
-                            <span class="badge bg-light text-dark border p-2 me-1">
-                                <%= file %>
-                            </span>
+                            <a href="<%= file.downloadLink %>" class="btn btn-light border btn-sm me-2 mb-2">
+                                <i class="fas fa-file-download me-1"></i>
+                                <%= file.filename %>
+                                    <span class="text-muted small">(<%= file.size %>)</span>
+                            </a>
                             <% }) %>
                     </div>
                     <% } %>

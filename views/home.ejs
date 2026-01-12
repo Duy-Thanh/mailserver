@@ -41,11 +41,14 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-light bg-white border-bottom px-4">
+    <nav class="navbar navbar-light bg-white border-bottom px-4 d-flex justify-content-between">
         <a class="navbar-brand fw-bold text-primary" href="/"><i class="fas fa-paper-plane"></i> Javalorant Mail</a>
-        <span class="text-muted small">
-            <%= user %>
-        </span>
+        <div class="d-flex align-items-center">
+            <span class="text-muted small me-3">
+                <%= user %>
+            </span>
+            <a href="/logout" class="btn btn-outline-danger btn-sm">Logout <i class="fas fa-sign-out-alt"></i></a>
+        </div>
     </nav>
 
     <div class="container-fluid">

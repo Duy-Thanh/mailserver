@@ -15,6 +15,7 @@
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
+    "express-session": "^1.18.2",
     "imap-simple": "^5.1.0",
     "mailparser": "^3.9.1",
     "multer": "^2.0.2",
