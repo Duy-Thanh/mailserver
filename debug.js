@@ -7,7 +7,6 @@ const config = {
         host: '127.0.0.1',        // <--- IP nội bộ
         port: 143,                 // <--- Port 143
         tls: false,                // <--- TẮT SSL
-        autotls: 'never',
         tlsOptions: { rejectUnauthorized: false },
         authTimeout: 10000
     }
