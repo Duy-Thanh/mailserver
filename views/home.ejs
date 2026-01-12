@@ -156,19 +156,20 @@
                     });
                 }
 
-                function trashEmail(uid, event) {
-                    event.stopPropagation(); // Không cho nó nhảy vào trang đọc mail
-                    if (!confirm('Mày chắc chắn muốn vứt cái này vào sọt rác chứ?')) return;
-
-                    $.post('/api/emails/move-to-trash', { uid: uid }, function (res) {
-                        console.log(res.message);
-                        loadEmails(currentBox); // Load lại phát cho nó biến mất luôn
-                    }).fail(function (err) {
-                        alert('Lỗi đéo xóa được: ' + err.responseJSON.error);
-                    });
-                }
                 $('#email-list').html(html);
                 console.log(`[${new Date().toLocaleTimeString()}] Real-time: Updated ${boxName}`);
+            });
+        }
+
+        function trashEmail(uid, event) {
+            event.stopPropagation(); // Không cho nó nhảy vào trang đọc mail
+            if (!confirm('Mày chắc chắn muốn vứt cái này vào sọt rác chứ?')) return;
+
+            $.post('/api/emails/move-to-trash', { uid: uid }, function (res) {
+                console.log(res.message);
+                loadEmails(currentBox); // Load lại phát cho nó biến mất luôn
+            }).fail(function (err) {
+                alert('Lỗi đéo xóa được: ' + err.responseJSON.error);
             });
         }
 
