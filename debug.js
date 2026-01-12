@@ -4,7 +4,7 @@ const config = {
     imap: {
         user: 'admin@javalorant.xyz',
         password: 'Nekkochan123',  // <--- Pass mới mày vừa đổi
-        host: '172.20.0.2',        // <--- IP nội bộ
+        host: '127.0.0.1',        // <--- IP nội bộ
         port: 143,                 // <--- Port 143
         tls: false,                // <--- TẮT SSL
         tlsOptions: { rejectUnauthorized: false },
