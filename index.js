@@ -33,8 +33,8 @@ const getImapConfig = (user, pass) => ({
         user: user,
         password: pass,
         host: process.env.MAIL_HOST || 'localhost',
-        port: process.env.IMAP_PORT || 993,
-        tls: true,
+        port: process.env.IMAP_PORT || 143,
+        tls: false, // <--- QUAN TRỌNG: SỬA THÀNH FALSE
         tlsOptions: { rejectUnauthorized: false },
         authTimeout: 5000
     }
