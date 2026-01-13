@@ -450,59 +450,56 @@
             loadEmails('INBOX');
             setInterval(() => loadEmails(currentBox), 45000); // Tăng lên 45s cho đỡ tốn tài nguyên server
 
-            // LOGIC SEARCH THỜI GIAN THỰC ĐÂY THÀNH ƠI!
+            // SEARCH KHÔNG CẦN LOAD LẠI TRANG
             $('.search-bar').on('input', function () {
                 const keyword = $(this).val().toLowerCase();
-                renderEmailList(allEmails.filter(m =>
-                    m.subject.toLowerCase().includes(keyword) ||
-                    m.from.toLowerCase().includes(keyword)
-                ));
+                const filtered = allEmails.filter(m =>
+                    (m.subject && m.subject.toLowerCase().includes(keyword)) ||
+                    (m.from && m.from.toLowerCase().includes(keyword))
+                );
+                renderEmailList(filtered);
             });
         });
 
         function loadEmails(boxName) {
             currentBox = boxName;
-            $('#current-box-title').text(boxName);
+            // Hiển thị Title chuẩn chỉ
+            $('#current-box-title').text(boxName.toUpperCase());
 
             $('.nav-link').removeClass('active');
             $('.nav-link').each(function () {
                 if ($(this).text().trim().toLowerCase().includes(boxName.toLowerCase())) $(this).addClass('active');
             });
 
-            // HIỆN SPINNER KHI ĐANG TẢI
-            $('#email-list').html('<div class="text-center p-5"><div class="spinner-border text-primary"></div></div>');
-
             $.get(`/api/emails?box=${boxName}&_=${Date.now()}`, function (data) {
                 allEmails = data;
+                renderEmailList(data);
+
                 if (boxName.toUpperCase() === 'INBOX') {
                     const unread = data.filter(m => !m.seen).length;
                     unread > 0 ? $('#unread-count').text(unread).removeClass('d-none') : $('#unread-count').addClass('d-none');
                 }
-                renderEmailList(data);
-            }).fail(function (xhr) {
-                // VẢ THÔNG BÁO LỖI VÀO SNACKBAR
-                const errMsg = xhr.responseJSON ? xhr.responseJSON.error : "Server ngỏm củ tỏi!";
-                showSnackbar(`ĐM: ${errMsg}`);
-                $('#email-list').html(`<div class="p-5 text-center text-danger"><i class="fas fa-exclamation-triangle mb-3 fs-1"></i><br>${errMsg}</div>`);
+            }).fail(function () {
+                showSnackbar("Server ngỏm rồi Thành ơi!");
             });
         }
 
         function renderEmailList(data) {
             let $list = $('#email-list').empty();
             if (!data || data.length === 0) {
-                $list.html(`<div class="p-5 text-center text-muted">Đéo có mail nào ở hòm này cả!</div>`);
+                $list.html(`<div class="p-5 text-center text-muted">Hòm thư ${currentBox} trống rỗng</div>`);
                 return;
             }
 
             data.forEach(mail => {
-                let contact = (currentBox.toUpperCase() === 'SENT') ? `To: ${mail.to || 'Unknown'}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
+                let contact = (currentBox.toUpperCase() === 'SENT') ? `To: ${mail.to}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
                 let initial = contact.replace('To: ', '').trim().charAt(0).toUpperCase() || '?';
                 let time = new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                let avatarBg = getAvatarColor(contact);
+                let avatarColor = getAvatarColor(contact);
 
                 $list.append(`
                 <div class="email-item ${mail.seen ? '' : 'unseen'}" onclick="window.location='/read/${mail.id}'">
-                    <div class="avatar-circle" style="background-color: ${avatarBg}">${initial}</div>
+                    <div class="avatar-circle" style="background-color: ${avatarColor}">${initial}</div>
                     <div class="flex-grow-1 overflow-hidden">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="email-title ${mail.seen ? '' : 'fw-bold'}">${contact}</span>
