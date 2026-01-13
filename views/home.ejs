@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            /* Bảng màu Material 3 */
             --md-sys-color-primary: #0056d6;
             --md-sys-color-on-primary: #ffffff;
             --md-sys-color-primary-container: #d8e2ff;
@@ -20,6 +19,7 @@
             --md-sys-color-surface-container: #f3f3f9;
             --md-sys-color-on-surface: #1b1b1f;
             --md-sys-color-outline-variant: #c4c6d0;
+            --md-sys-color-secondary-container: #e1e2ec;
         }
 
         html,
@@ -38,189 +38,231 @@
             color: var(--md-sys-color-on-surface);
         }
 
-        /* NAVBAR KIỂU M3 */
+        /* NAVBAR M3 VỚI SEARCH BAR */
         .navbar {
-            height: 64px;
+            height: 72px;
             background: var(--md-sys-color-surface) !important;
-            border-bottom: none !important;
             padding: 0 24px;
+            gap: 24px;
         }
 
-        .navbar-brand {
-            font-size: 22px;
-            color: var(--md-sys-color-on-surface) !important;
-            font-weight: 500;
+        .search-container {
+            flex: 1;
+            max-width: 720px;
+            position: relative;
+        }
+
+        .search-bar {
+            background: var(--md-sys-color-surface-container);
+            border: none;
+            border-radius: 28px;
+            padding: 12px 24px 12px 56px;
+            width: 100%;
+            height: 48px;
+            transition: 0.2s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 14px;
+            color: #44474e;
         }
 
         .main-wrapper {
             display: flex;
             flex: 1;
             overflow: hidden;
-            padding: 0 8px 8px 8px;
+            padding: 0 12px 12px 12px;
         }
 
-        /* SIDEBAR / NAV DRAWER */
+        /* SIDEBAR NÂNG CẤP */
         .sidebar-container {
-            width: 260px;
+            width: 280px;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
+            padding-right: 12px;
         }
 
-        /* NÚT COMPOSE FAB */
         .btn-compose {
             background-color: var(--md-sys-color-primary-container);
             color: var(--md-sys-color-on-primary-container);
             border: none;
-            padding: 16px 24px;
+            padding: 18px 28px;
             border-radius: 16px;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin: 8px 16px 24px 8px;
-            transition: box-shadow 0.2s;
+            gap: 16px;
+            margin: 8px 0 24px 0;
+            transition: 0.2s;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .btn-compose:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            background-color: #ced9f7;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
         }
 
         .nav-link {
-            color: var(--md-sys-color-on-surface);
+            color: #44474e;
             border-radius: 28px;
-            /* Bo tròn tuyệt đối kiểu M3 */
             padding: 12px 24px;
             margin-bottom: 4px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            transition: background 0.2s;
+            gap: 16px;
+            transition: 0.2s;
             font-weight: 500;
-            border: none !important;
-        }
-
-        .nav-link:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+            cursor: pointer;
         }
 
         .nav-link.active {
-            background-color: var(--md-sys-color-primary-container) !important;
-            color: var(--md-sys-color-on-primary-container) !important;
+            background-color: var(--md-sys-color-secondary-container) !important;
+            color: #1b1b1f !important;
         }
 
-        /* CONTENT AREA - TRẮNG TUYỆT ĐỐI */
+        .nav-link:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* CONTENT AREA - CARD NỔI BẬT */
         .content-area {
             flex: 1;
             background-color: white;
-            border-radius: 28px;
-            /* Material 3 dùng bo góc rất lớn */
+            border-radius: 32px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--md-sys-color-outline-variant);
-        }
-
-        .card-header {
-            background: transparent !important;
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--md-sys-color-outline-variant) !important;
         }
 
         #email-list {
             flex: 1;
             overflow-y: auto;
+            scrollbar-width: thin;
         }
 
-        /* EMAIL ITEM KIỂU LIST M3 */
+        /* EMAIL ITEM STYLE */
         .email-item {
-            border: none !important;
-            padding: 16px 24px !important;
-            transition: background 0.2s;
-            background: transparent !important;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important;
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f1f1;
+            transition: 0.1s;
+            position: relative;
+            gap: 16px;
         }
 
         .email-item:hover {
             background-color: var(--md-sys-color-surface-container) !important;
+            box-shadow: inset 0 0 0 1px var(--md-sys-color-outline-variant);
         }
 
         .unseen {
             background-color: #f0f4ff !important;
-            /* Xanh nhẹ nhàng */
         }
 
-        .unseen .email-title {
-            font-weight: 800 !important;
-            /* Đậm đặc */
-            color: #000 !important;
-        }
-
-        .unseen .email-snippet {
-            font-weight: 600 !important;
-            color: #1b1b1f !important;
-        }
-
-        /* Thêm cái dấu chấm xanh cho nó "nguy hiểm" */
-        .unseen::before {
-            content: "●";
-            color: var(--md-sys-color-primary);
+        .unseen::after {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: var(--md-sys-color-primary);
+            border-radius: 50%;
             position: absolute;
             left: 8px;
-            font-size: 12px;
+        }
+
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: var(--md-sys-color-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
         }
 
         .email-title {
-            font-size: 16px;
-            margin-bottom: 2px;
+            font-size: 15px;
+            color: var(--md-sys-color-on-surface);
         }
 
         .email-snippet {
             font-size: 14px;
-            color: #444;
+            color: #44474e;
         }
 
         .email-date {
             font-size: 12px;
             font-weight: 500;
+            white-space: nowrap;
         }
 
-        .badge-m3 {
-            background: var(--md-sys-color-primary);
-            color: white;
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 10px;
+        /* SNACKBAR / TOAST M3 */
+        .m3-toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 2000;
         }
 
-        /* TOAST / SNACKBAR M3 */
-        .toast-container {
-            bottom: 24px !important;
-            right: 24px !important;
+        .m3-snackbar {
+            background: #313033;
+            color: #f4eff4;
+            padding: 14px 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+            min-width: 320px;
+            animation: slideUp 0.3s ease-out;
         }
 
-        .toast {
-            background: #313033 !important;
-            color: #f4eff4 !important;
-            border-radius: 4px !important;
-            border: none !important;
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-light">
-        <div class="d-flex align-items-center w-100">
-            <i class="fas fa-bars me-4 text-muted" style="cursor: pointer;"></i>
-            <a class="navbar-brand" href="/">Javalorant</a>
-            <div class="ms-auto d-flex align-items-center">
-                <span class="text-muted small me-4">
-                    <%= user %>
-                </span>
-                <a href="/logout" class="btn btn-outline-secondary btn-sm rounded-pill px-3">Logout</a>
-            </div>
+        <div class="d-flex align-items-center">
+            <i class="fas fa-bars me-4 text-muted fs-5" style="cursor: pointer;"></i>
+            <a class="navbar-brand m-0" href="/">Javalorant</a>
+        </div>
+
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-bar" placeholder="Search in mail (Thành đẹp trai...)">
+        </div>
+
+        <div class="ms-auto d-flex align-items-center">
+            <span class="text-muted small me-4 d-none d-md-block">
+                <%= user %>
+            </span>
+            <a href="/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-bold">Logout</a>
         </div>
     </nav>
 
@@ -231,11 +273,11 @@
                 <span>Compose</span>
             </button>
 
-            <div class="px-2">
+            <div class="nav-folders">
                 <a class="nav-link active" onclick="loadEmails('INBOX')">
                     <i class="fas fa-inbox"></i>
                     <span>Inbox</span>
-                    <span id="unread-count" class="ms-auto badge-m3 d-none">0</span>
+                    <span id="unread-count" class="ms-auto badge bg-primary rounded-pill d-none">0</span>
                 </a>
                 <a class="nav-link" onclick="loadEmails('Sent')">
                     <i class="far fa-paper-plane"></i>
@@ -248,17 +290,18 @@
             </div>
         </div>
 
-        <div class="content-area">
+        <div class="content-area shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold" id="current-box-title">Inbox</h5>
-                <button class="btn btn-light btn-sm rounded-pill px-3 border" onclick="loadEmails(currentBox)">
-                    <i class="fas fa-sync-alt me-1"></i> Refresh
+                <button class="btn btn-light btn-sm rounded-pill px-3 border-0 bg-transparent hover-bg"
+                    onclick="loadEmails(currentBox)">
+                    <i class="fas fa-sync-alt"></i>
                 </button>
             </div>
 
             <div id="email-list">
                 <div class="text-center p-5">
-                    <div class="spinner-border text-primary"></div>
+                    <div class="spinner-border text-primary" role="status"></div>
                 </div>
             </div>
         </div>
@@ -271,114 +314,94 @@
                 <div class="modal-header border-0 px-4 pt-4">
                     <h5 class="modal-title fw-bold" style="font-size: 24px;"><i class="fas fa-pencil me-2"></i>New
                         Message</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="/send" method="POST" enctype="multipart/form-data">
                     <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <input type="email" name="to" class="form-control border-0 bg-light rounded-4 p-3"
-                                placeholder="To" required style="box-shadow: none;">
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" name="subject" class="form-control border-0 bg-light rounded-4 p-3"
-                                placeholder="Subject" required style="box-shadow: none;">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small text-muted ms-2"><i class="fas fa-paperclip"></i>
+                        <input type="email" name="to" class="form-control border-0 bg-light rounded-4 p-3 mb-3"
+                            placeholder="To" required>
+                        <input type="text" name="subject" class="form-control border-0 bg-light rounded-4 p-3 mb-3"
+                            placeholder="Subject" required>
+                        <div class="mb-3 px-2">
+                            <label class="form-label small text-muted"><i class="fas fa-paperclip me-1"></i>
                                 Attachments</label>
                             <input type="file" name="attachments" class="form-control border-0 bg-light rounded-4"
                                 multiple>
                         </div>
-                        <div class="mb-2">
-                            <textarea name="message" class="form-control border-0 bg-light rounded-4 p-3" rows="10"
-                                placeholder="Write your message here..."
-                                style="resize: none; box-shadow: none;"></textarea>
-                        </div>
+                        <textarea name="message" class="form-control border-0 bg-light rounded-4 p-3" rows="12"
+                            placeholder="Write your message here..." style="resize: none;"></textarea>
                     </div>
                     <div class="modal-footer border-0 px-4 pb-4">
                         <button type="button" class="btn btn-light rounded-pill px-4"
                             data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary rounded-pill px-5 shadow-sm"
-                            style="background-color: var(--md-sys-color-primary);">
-                            Send <i class="fas fa-paper-plane ms-2"></i>
-                        </button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-5 shadow-sm">Send</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <div class="m3-toast-container" id="snackbar-container"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let currentBox = 'INBOX';
 
-        $(document).ready(function () {
-            // 1. CHECK THÔNG BÁO TỪ URL (Nếu có gửi mail xong quay về)
-            const urlParams = new URLSearchParams(window.location.search);
-            const msg = urlParams.get('msg');
-            if (msg) {
-                alert(msg); // Tạm thời dùng alert cho gắt, hoặc mày tự chế Toast CSS
-            }
+        function showSnackbar(msg) {
+            const id = Date.now();
+            $('#snackbar-container').append(`<div class="m3-snackbar" id="sb-${id}"><i class="fas fa-info-circle"></i>${msg}</div>`);
+            setTimeout(() => $(`#sb-${id}`).fadeOut(() => $(`#sb-${id}`).remove()), 4000);
+        }
 
-            // 2. TỰ ĐỘNG ACTIVE TAB KHI LOAD TRANG
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('msg')) showSnackbar(urlParams.get('msg'));
+
             const boxFromUrl = (urlParams.get('box') || 'INBOX').toUpperCase();
             loadEmails(boxFromUrl);
-
-            // 3. Real-time quét mail mỗi 30s
             setInterval(() => loadEmails(currentBox), 30000);
         });
 
         function loadEmails(boxName) {
-            // Chuẩn hóa tên Box về viết hoa để check logic cho chuẩn
             const targetBox = boxName.toUpperCase();
             currentBox = targetBox;
+            $('#current-box-title').text(targetBox.charAt(0) + targetBox.slice(1).toLowerCase());
 
-            // Cập nhật title giao diện (Ví dụ: Inbox, Sent, Trash)
-            const displayTitle = targetBox.charAt(0) + targetBox.slice(1).toLowerCase();
-            $('#current-box-title').text(displayTitle);
-
-            // ĐM THÀNH, ĐOẠN NÀY LÀ ĐỂ SIDEBAR SÁNG LÊN ĐÂY!
             $('.nav-link').removeClass('active');
             $('.nav-link').each(function () {
-                const linkText = $(this).text().trim().toUpperCase();
-                // So sánh viết hoa hết cho nó khỏi cãi
-                if (linkText.includes(targetBox)) {
-                    $(this).addClass('active');
-                }
+                if ($(this).text().trim().toUpperCase().includes(targetBox)) $(this).addClass('active');
             });
 
-            const url = `/api/emails?box=${targetBox}&_=${Date.now()}`;
-
-            $.get(url, function (data) {
-                let $list = $('#email-list');
-                $list.empty();
+            $.get(`/api/emails?box=${targetBox}&_=${Date.now()}`, function (data) {
+                let $list = $('#email-list').empty();
+                if (targetBox === 'INBOX') {
+                    const unread = data.filter(m => !m.seen).length;
+                    unread > 0 ? $('#unread-count').text(unread).removeClass('d-none') : $('#unread-count').addClass('d-none');
+                }
 
                 if (!data || data.length === 0) {
-                    $list.html(`<div class="p-5 text-center text-muted">Hòm thư ${displayTitle} trống rỗng</div>`);
+                    $list.html('<div class="p-5 text-center text-muted">No messages found.</div>');
                 } else {
-                    let html = '';
                     data.forEach(mail => {
-                        let contactDisplay = (targetBox === 'SENT') ? `To: ${mail.to || 'Unknown'}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
-                        let statusClass = mail.seen ? '' : 'unseen';
+                        const contact = (targetBox === 'SENT') ? `To: ${mail.to || 'Unknown'}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
+                        const initial = contact.replace('To: ', '').charAt(0).toUpperCase();
+                        const time = new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                        html += `
-                    <div class="email-item d-flex align-items-center ${statusClass}" onclick="window.location='/read/${mail.id}'" style="cursor:pointer; position:relative;">
-                        <div class="flex-grow-1 overflow-hidden">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="email-title ${mail.seen ? '' : 'fw-bold'}">${contactDisplay}</span>
-                                <span class="email-date ${mail.seen ? 'text-muted' : 'text-primary fw-bold'}">
-                                    ${new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </span>
+                        $list.append(`
+                            <div class="email-item ${mail.seen ? '' : 'unseen'}" onclick="window.location='/read/${mail.id}'">
+                                <div class="avatar-circle">${initial}</div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="email-title fw-bold">${contact}</span>
+                                        <span class="email-date ${mail.seen ? 'text-muted' : 'text-primary'}">${time}</span>
+                                    </div>
+                                    <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
+                                </div>
                             </div>
-                            <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
-                        </div>
-                    </div>`;
+                        `);
                     });
-                    $list.html(html);
                 }
-            }).fail(function () {
-                console.error("Đm server lại ngáo rồi, check API đi!");
             });
         }
     </script>
