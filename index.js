@@ -164,29 +164,23 @@ app.get('/download/:uid/:filename', requireLogin, async (req, res) => {
     try {
         const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
         await connection.openBox('INBOX');
-
-        const searchCriteria = [['UID', req.params.uid]];
-        const fetchOptions = { bodies: [''], markSeen: false };
-        const messages = await connection.search(searchCriteria, fetchOptions);
+        const messages = await connection.search([['UID', req.params.uid]], { bodies: [''], markSeen: false });
 
         if (messages.length > 0) {
             const all = messages[0].parts.filter(part => part.which === '');
             const parsed = await simpleParser(all[0].body);
-
             const file = parsed.attachments.find(att => att.filename === req.params.filename);
 
             if (file) {
-                res.setHeader('Content-disposition', 'attachment; filename=' + file.filename);
+                // ĐM THÀNH, PHẢI ENCODE CÁI NÀY NÀY!
+                const safeFilename = encodeURIComponent(file.filename);
+                res.setHeader('Content-disposition', `attachment; filename*=UTF-8''${safeFilename}`);
                 res.setHeader('Content-type', file.contentType);
-                res.send(file.content); // Trả về nội dung file
-            } else {
-                res.send("File not found!");
-            }
+                res.send(file.content);
+            } else { res.send("File not found!"); }
         }
         connection.end();
-    } catch (err) {
-        res.send("Error downloading: " + err);
-    }
+    } catch (err) { res.send("Error downloading: " + err); }
 });
 
 // 4. SEND MAIL
@@ -221,44 +215,26 @@ app.post('/send', requireLogin, upload.array('attachments'), async (req, res) =>
 
 app.get('/api/emails', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Chưa đăng nhập!' });
-
-    const boxName = req.query.box || 'INBOX'; // <--- CẢI TIẾN: Mặc định là INBOX, nếu có request thì lấy theo box
-    const config = getImapConfig(req.session.user, req.session.pass); // Hàm config cũ của mày
-
+    const boxName = req.query.box || 'INBOX';
     try {
-        const connection = await imaps.connect(config);
-
-        // Mở đúng cái hộp cần mở (INBOX, Sent, Trash...)
+        const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
         await connection.openBox(boxName);
+        const messages = await connection.search(['ALL'], { bodies: ['HEADER'], markSeen: false });
 
-        const searchCriteria = ['ALL'];
-        const fetchOptions = {
-            bodies: ['HEADER', 'TEXT'],
-            markSeen: false,
-            struct: true
-        };
-
-        const messages = await connection.search(searchCriteria, fetchOptions);
-
-        // Xử lý dữ liệu trả về (Map lại cho đẹp)
         const emails = messages.map(msg => {
             const header = msg.parts.filter(part => part.which === 'HEADER')[0].body;
             return {
                 id: msg.attributes.uid,
                 from: header.from[0],
-                to: header.to ? header.to[0] : 'Unknown', // Lấy thêm To để hiển thị cho mục Sent
                 subject: header.subject[0],
                 date: header.date[0],
-                box: boxName // Trả về để Frontend biết đang ở đâu
+                // VẢ CÁI NÀY VÀO CHO TAO!
+                seen: msg.attributes.flags.includes('\\Seen')
             };
         });
-
         connection.end();
-        res.json(emails.reverse()); // Đảo ngược để mail mới nhất lên đầu
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: 'Lỗi lấy mail: ' + err.message });
-    }
+        res.json(emails.reverse());
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/emails/move-to-trash', async (req, res) => {

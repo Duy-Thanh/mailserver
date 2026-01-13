@@ -149,11 +149,27 @@
 
         .unseen {
             background-color: #f0f4ff !important;
+            /* Xanh nhẹ nhàng */
         }
 
-        .unseen .fw-bold-m3 {
-            font-weight: 700;
-            color: #000;
+        .unseen .email-title {
+            font-weight: 800 !important;
+            /* Đậm đặc */
+            color: #000 !important;
+        }
+
+        .unseen .email-snippet {
+            font-weight: 600 !important;
+            color: #1b1b1f !important;
+        }
+
+        /* Thêm cái dấu chấm xanh cho nó "nguy hiểm" */
+        .unseen::before {
+            content: "●";
+            color: var(--md-sys-color-primary);
+            position: absolute;
+            left: 8px;
+            font-size: 12px;
         }
 
         .email-title {
@@ -318,19 +334,22 @@
                 } else {
                     let html = '';
                     data.forEach(mail => {
-                        // ... giữ nguyên logic vẽ mail của mày ...
                         let contact = (boxName === 'Sent') ? `To: ${mail.to}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
-                        let isUnseen = !mail.seen ? 'unseen' : '';
+                        // CHECK BIẾN SEEN Ở ĐÂY NÀY!
+                        let statusClass = mail.seen ? '' : 'unseen';
+
                         html += `
-                <div class="email-item d-flex align-items-center ${isUnseen}" onclick="window.location='/read/${mail.id}'" style="cursor:pointer">
-                    <div class="flex-grow-1 overflow-hidden">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="email-title fw-bold-m3">${contact}</span>
-                            <span class="email-date">${new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                        </div>
-                        <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
-                    </div>
-                </div>`;
+                            <div class="email-item d-flex align-items-center ${statusClass}" onclick="window.location='/read/${mail.id}'" style="cursor:pointer; position:relative;">
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="email-title ${mail.seen ? '' : 'fw-bold'}">${contact}</span>
+                                        <span class="email-date ${mail.seen ? 'text-muted' : 'text-primary fw-bold'}">
+                                            ${new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </span>
+                                    </div>
+                                    <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
+                                </div>
+                            </div>`;
                     });
                     $list.html(html);
                 }
