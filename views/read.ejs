@@ -17,7 +17,6 @@
             --md-outline: #74777f;
             --md-body-bg: #fdfbff;
             --md-card-bg: #ffffff;
-            --md-reply-bg: #f3f3f9;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -25,12 +24,10 @@
                 --md-surface: #111318;
                 --md-surface-variant: #44474e;
                 --md-primary: #adc6ff;
-                /* Xanh sáng đặc trưng M3 Dark */
                 --md-on-surface: #e3e2e6;
                 --md-outline: #8e9099;
                 --md-body-bg: #111318;
                 --md-card-bg: #1b1b1f;
-                --md-reply-bg: #232326;
             }
 
             body {
@@ -54,14 +51,60 @@
                 font-weight: 700 !important;
             }
 
-            /* ÉP CHỮ TRONG BODY PHẢI SÁNG ĐỂ ĐỌC ĐƯỢC */
+            /* ĐM THÀNH, CHIÊU CUỐI ĐÂY: ÉP TẤT CẢ CHỮ TRONG BODY PHẢI SÁNG */
             .email-body,
             .email-body * {
                 color: var(--md-on-surface) !important;
                 background-color: transparent !important;
             }
 
-            /* SỬA REPLY BOX NHÌN CHO SANG */
+            /* Fix riêng cho mấy cái link cho nó nổi */
+            .email-body a,
+            .email-body a * {
+                color: var(--md-primary) !important;
+                text-decoration: underline !important;
+            }
+
+            /* Fix đoạn Quoted text (cái vạch dọc bên trái) */
+            .email-body blockquote {
+                border-left: 3px solid var(--md-primary) !important;
+                padding-left: 16px !important;
+                margin-left: 4px !important;
+                opacity: 0.8;
+            }
+
+            /* Fix cho các đoạn văn bản thô (pre-formatted) */
+            .email-body pre {
+                background-color: #2b2b2f !important;
+                padding: 12px !important;
+                border-radius: 8px !important;
+                color: var(--md-on-surface) !important;
+            }
+
+            /* ĐM THÀNH, PHẢI VẢ THẰNG NÀY NÀY! */
+            .text-dark,
+            .email-subject,
+            .fw-bold {
+                color: var(--md-on-surface) !important;
+            }
+
+            .text-muted {
+                color: #909094 !important;
+            }
+
+            .email-header {
+                border-bottom-color: var(--md-surface-variant) !important;
+            }
+
+            .email-body {
+                color: var(--md-on-surface) !important;
+            }
+
+            .email-body a {
+                color: var(--md-primary) !important;
+            }
+
+            /* REPLY BOX DARK */
             .reply-container {
                 background-color: var(--md-reply-bg) !important;
                 border-radius: 32px !important;
@@ -77,7 +120,6 @@
                 color: #ffffff !important;
             }
 
-            /* AVATAR VÀ ICON SÁNG BỪNG */
             .avatar-m3 {
                 background-color: var(--md-primary) !important;
                 color: #001a41 !important;
@@ -91,7 +133,13 @@
                 background-color: rgba(255, 255, 255, 0.08) !important;
             }
 
-            /* ATTACHMENT CHIPS PHẢI NỔI */
+            /* CHỮ TRONG QUOTED TEXT (MÀY TEST ĐI) */
+            blockquote {
+                border-left-color: var(--md-outline) !important;
+                color: #909094 !important;
+            }
+
+            /* ATTACHMENT CHIPS DARK */
             .attachment-chip {
                 background-color: #2b2b2f !important;
                 border-color: var(--md-surface-variant) !important;
@@ -105,6 +153,10 @@
 
             .bg-primary-subtle {
                 background-color: rgba(173, 198, 255, 0.15) !important;
+            }
+
+            .text-primary {
+                color: var(--md-primary) !important;
             }
         }
 
