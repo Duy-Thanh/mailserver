@@ -258,24 +258,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // BIẾN THẦN THÁNH ĐỂ GIỮ FILE QUA NHIỀU LẦN CHỌN
         let selectedFilesArray = [];
+        const MAX_SIZE_MB = 10; // Giới hạn 10MB cho nó an toàn, Thành ơi
 
-        function trashThisMail(uid) {
-            if (!confirm('Xóa mail này nhé Thành?')) return;
-            $.post('/api/emails/move-to-trash', { uid: uid }, function (res) {
-                window.location.href = '/?msg=Đã dọn dẹp sạch sẽ! 🧹';
-            });
-        }
-
-        // LOGIC CHỌN NHIỀU FILE (CỘNG DỒN)
+        // LOGIC CHỌN NHIỀU FILE & CHECK DUNG LƯỢNG
         $('#quick-attach-input').on('change', function (e) {
             const newFiles = Array.from(this.files);
+            let totalSize = selectedFilesArray.reduce((acc, f) => acc + f.size, 0);
 
-            // Cộng dồn file mới vào mảng cũ
-            selectedFilesArray = [...selectedFilesArray, ...newFiles];
+            newFiles.forEach(file => {
+                if ((totalSize + file.size) / (1024 * 1024) > MAX_SIZE_MB) {
+                    alert(`Đm Thành, file "${file.name}" làm mail nặng quá 10MB rồi, bớt tham đi!`);
+                } else {
+                    selectedFilesArray.push(file);
+                    totalSize += file.size;
+                }
+            });
 
             renderFiles();
+            $(this).val(''); // Reset input để có thể chọn lại cùng 1 file nếu lỡ tay xóa
         });
 
         function renderFiles() {
@@ -284,35 +285,31 @@
 
             selectedFilesArray.forEach((f, index) => {
                 $display.append(`
-                <div class="badge bg-primary-subtle text-primary border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-1 me-1" style="max-width: fit-content;">
+                <div class="badge bg-primary-subtle text-primary border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-1 me-1">
                     <i class="fas fa-file-alt"></i> 
                     <span class="text-truncate" style="max-width: 120px;">${f.name}</span>
-                    <i class="fas fa-times-circle text-danger" style="cursor:pointer" onclick="removeFile(${index})" title="Xóa"></i>
+                    <span class="text-muted" style="font-size: 0.7em;">(${(f.size / 1024).toFixed(1)}KB)</span>
+                    <i class="fas fa-times-circle text-danger" style="cursor:pointer" onclick="removeFile(${index})"></i>
                 </div>
             `);
             });
         }
 
         function removeFile(index) {
-            selectedFilesArray.splice(index, 1); // Xóa file khỏi mảng
-            renderFiles(); // Vẽ lại giao diện
+            selectedFilesArray.splice(index, 1);
+            renderFiles();
         }
 
-        // ĐM THÀNH, KHI BẤM SEND PHẢI DÙNG FORM DATA ĐỂ GỬI CÁI MẢNG NÀY ĐI
+        // AJAX SEND VỚI SPINNER CHO NÓ UY TÍN
         $('form').on('submit', function (e) {
-            e.preventDefault(); // Chặn gửi form mặc định
+            e.preventDefault();
+            const $btn = $(this).find('button[type="submit"]');
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Sending...');
 
             const formData = new FormData(this);
-
-            // Xóa attachments cũ trong formData (nếu có)
             formData.delete('attachments');
+            selectedFilesArray.forEach(file => formData.append('attachments', file));
 
-            // Vả toàn bộ mảng file tích lũy vào FormData
-            selectedFilesArray.forEach(file => {
-                formData.append('attachments', file);
-            });
-
-            // Gửi bằng Ajax cho nó "khét"
             $.ajax({
                 url: '/send',
                 type: 'POST',
@@ -323,7 +320,8 @@
                     window.location.href = '/?msg=Gửi thành công cmnr! 🚀';
                 },
                 error: function (err) {
-                    alert('Lỗi đéo gửi được: ' + err.responseText);
+                    alert('Lỗi: ' + err.responseText);
+                    $btn.prop('disabled', false).html('Send Reply <i class="fas fa-paper-plane ms-1"></i>');
                 }
             });
         });
