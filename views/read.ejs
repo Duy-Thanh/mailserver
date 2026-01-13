@@ -4,59 +4,145 @@
 <head>
     <meta charset="UTF-8">
     <title>
-        <%= mail.subject %> - Javalorant Mail
+        <%= mail.subject %> - Javalorant
     </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
         :root {
-            --primary: #0b57d0;
-            --bg: #f6f8fc;
+            --md-surface: #fdfbff;
+            --md-surface-variant: #e1e2ec;
+            --md-primary: #0056d6;
+            --md-on-surface: #1b1b1f;
+            --md-outline: #74777f;
         }
 
         body {
-            background: var(--bg);
-            padding: 30px 10px;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--md-surface);
+            color: var(--md-on-surface);
+            font-family: 'Google Sans', 'Segoe UI', system-ui, sans-serif;
+            padding-bottom: 50px;
         }
 
-        .card {
-            border-radius: 24px !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
-            border: none !important;
+        /* NÚT BACK VÀ ACTION TRÊN CÙNG */
+        .top-bar {
+            margin: 20px 0;
         }
 
-        .email-content {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #3c4043;
+        .btn-m3-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            transition: background 0.2s;
+            color: var(--md-on-surface);
         }
 
-        .email-content img {
+        .btn-m3-icon:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* CARD ĐỌC MAIL CHÍNH */
+        .email-container {
+            background-color: white;
+            border-radius: 28px;
+            /* Bo góc cực đại kiểu M3 */
+            border: 1px solid var(--md-surface-variant);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .email-header {
+            padding: 32px;
+            border-bottom: 1px solid var(--md-surface-variant);
+        }
+
+        .email-subject {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        /* AVATAR VÀ THÔNG TIN NGƯỜI GỬI */
+        .sender-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar-m3 {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            background-color: var(--md-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 20px;
+        }
+
+        .email-body {
+            padding: 32px;
+            line-height: 1.6;
+            font-size: 16px;
+            min-height: 200px;
+        }
+
+        .email-body img {
             max-width: 100%;
-            height: auto;
-            border-radius: 12px;
-            margin: 10px 0;
-        }
-
-        .hover-shadow:hover {
-            background-color: #f8f9fa !important;
-            border-color: var(--primary) !important;
-            transform: translateY(-2px);
-            transition: 0.2s;
-        }
-
-        .quick-reply-box {
             border-radius: 16px;
-            background: #fff;
-            border: 1px solid #dee2e6;
-            transition: 0.3s;
         }
 
-        .quick-reply-box:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(11, 87, 208, 0.1);
+        /* QUICK REPLY BOX KIỂU M3 CHAT */
+        .reply-container {
+            background-color: #f3f3f9;
+            border-radius: 28px;
+            padding: 24px;
+        }
+
+        .reply-input-wrapper {
+            background: white;
+            border-radius: 24px;
+            border: 1px solid var(--md-outline);
+            padding: 12px 20px;
+            transition: border 0.2s;
+        }
+
+        .reply-input-wrapper:focus-within {
+            border: 2px solid var(--md-primary);
+        }
+
+        textarea.m3-textarea {
+            border: none;
+            width: 100%;
+            outline: none;
+            resize: none;
+            font-size: 15px;
+            color: var(--md-on-surface);
+        }
+
+        .attachment-chip {
+            background-color: white;
+            border: 1px solid var(--md-outline);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.2s;
+        }
+
+        .attachment-chip:hover {
+            background-color: var(--md-surface-variant);
         }
 
         @media print {
@@ -64,125 +150,91 @@
                 display: none !important;
             }
 
-            body {
-                background: white;
-                padding: 0;
-            }
-
-            .card {
-                box-shadow: none !important;
+            .email-container {
+                border: none;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container" style="max-width: 900px;">
-        <div class="d-flex justify-content-between align-items-center mb-4 no-print">
-            <a href="/" class="btn btn-white shadow-sm rounded-pill px-4 text-dark border">
-                <i class="fas fa-arrow-left me-2"></i>Back to Inbox
+    <div class="container" style="max-width: 960px;">
+        <div class="top-bar d-flex justify-content-between align-items-center no-print">
+            <a href="/" class="btn-m3-icon" title="Back to Inbox">
+                <i class="fas fa-arrow-left"></i>
             </a>
             <div class="d-flex gap-2">
-                <button class="btn btn-white shadow-sm rounded-circle border" onclick="window.print()"
-                    title="Print Mail">
-                    <i class="fas fa-print"></i>
-                </button>
-                <button class="btn btn-white shadow-sm rounded-circle border text-danger"
-                    onclick="trashThisMail('<%= mail.id %>')" title="Move to Trash">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
+                <button class="btn-m3-icon" onclick="window.print()"><i class="fas fa-print"></i></button>
+                <button class="btn-m3-icon text-danger" onclick="trashThisMail('<%= mail.id %>')"><i
+                        class="fas fa-trash-alt"></i></button>
             </div>
         </div>
 
-        <div class="card overflow-hidden mb-4">
-            <div class="card-header bg-white p-4 p-md-5 border-0">
-                <div class="d-flex justify-content-between align-items-start mb-4">
-                    <h2 class="fw-bold text-dark m-0">
-                        <%= mail.subject %>
-                    </h2>
-                    <div class="text-end">
-                        <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 mb-2">Internal
-                            Secure</span>
-                        <div class="text-muted small">
-                            <%= new Date(mail.date).toLocaleString('en-US', { weekday: 'long' , year: 'numeric' ,
-                                month: 'long' , day: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="d-flex align-items-center p-3 bg-light rounded-4">
-                    <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm"
-                        style="width: 52px; height: 52px; font-size: 1.3rem; font-weight: bold;">
+        <div class="email-container shadow-sm">
+            <div class="email-header">
+                <h1 class="email-subject text-dark">
+                    <%= mail.subject %>
+                </h1>
+                <div class="sender-info">
+                    <div class="avatar-m3">
                         <%= mail.from.text.charAt(0).toUpperCase() %>
                     </div>
-                    <div class="ms-3">
-                        <div class="fw-bold text-dark h5 mb-0">
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">
                             <%= mail.from.text %>
                         </div>
-                        <div class="text-muted small">From: <span class="text-primary">
-                                <%= mail.from.value[0].address %>
-                            </span></div>
+                        <div class="text-muted small">To: me &lt;<%= user %>&gt;</div>
                     </div>
-                    <div class="ms-auto no-print">
-                        <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal"
-                            data-bs-target="#replyModal">
-                            <i class="fas fa-reply me-2"></i>Reply
-                        </button>
+                    <div class="text-end text-muted small">
+                        <%= new Date(mail.date).toLocaleString('en-US', { hour: '2-digit' , minute: '2-digit' ,
+                            day: 'numeric' , month: 'short' }) %>
                     </div>
                 </div>
             </div>
 
-            <div class="card-body p-4 p-md-5 bg-white border-top">
-                <div class="email-content">
-                    <%- mail.html ? mail.html : mail.textAsHtml %>
-                </div>
+            <div class="email-body">
+                <%- mail.html ? mail.html : mail.textAsHtml %>
 
-                <% if (attachments && attachments.length> 0) { %>
-                    <div class="mt-5 pt-4 border-top no-print">
-                        <h6 class="fw-bold mb-3 text-secondary"><i class="fas fa-paperclip me-2"></i>Attachments (<%=
-                                attachments.length %>)</h6>
-                        <div class="d-flex flex-wrap gap-3">
-                            <% attachments.forEach(file=> { %>
-                                <a href="<%= file.downloadLink %>"
-                                    class="btn btn-outline-secondary border-dashed d-flex align-items-center p-3 rounded-4 hover-shadow"
-                                    style="text-decoration: none; min-width: 200px;">
-                                    <div class="bg-primary-subtle p-2 rounded-3 me-3 text-primary">
-                                        <i class="fas fa-file-invoice fa-lg"></i>
-                                    </div>
-                                    <div class="text-start overflow-hidden">
-                                        <div class="text-dark fw-bold text-truncate" style="font-size: 0.9rem;">
-                                            <%= file.filename %>
+                    <% if (attachments && attachments.length> 0) { %>
+                        <div class="mt-5 pt-4 border-top no-print">
+                            <p class="small fw-bold text-muted mb-3">Attachments</p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <% attachments.forEach(file=> { %>
+                                    <a href="<%= file.downloadLink %>" class="attachment-chip">
+                                        <i class="fas fa-file-alt text-primary"></i>
+                                        <div>
+                                            <div class="small fw-bold text-truncate" style="max-width: 150px;">
+                                                <%= file.filename %>
+                                            </div>
+                                            <div class="text-muted" style="font-size: 11px;">
+                                                <%= file.size %>
+                                            </div>
                                         </div>
-                                        <div class="text-muted" style="font-size: 0.75rem;">
-                                            <%= file.size %>
-                                        </div>
-                                    </div>
-                                </a>
-                                <% }) %>
+                                    </a>
+                                    <% }) %>
+                            </div>
                         </div>
-                    </div>
-                    <% } %>
+                        <% } %>
             </div>
         </div>
 
-        <div class="card p-4 no-print shadow-sm">
-            <h6 class="fw-bold mb-3 text-muted"><i class="fas fa-bolt me-2 text-warning"></i>Quick Reply</h6>
+        <div class="reply-container no-print">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <i class="fas fa-bolt text-warning"></i>
+                <span class="fw-bold small text-muted">Quick Reply</span>
+            </div>
             <form action="/send" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="to" value="<%= mail.from.value[0].address %>">
                 <input type="hidden" name="subject" value="Re: <%= mail.subject %>">
-                <div class="quick-reply-box p-3">
-                    <textarea name="message" class="form-control border-0 bg-transparent mb-3" rows="3"
-                        placeholder="Click here to reply instantly to <%= mail.from.text %>..."
-                        style="box-shadow: none; resize: none;"></textarea>
-                    <div class="d-flex justify-content-between align-items-center border-top pt-3">
-                        <div class="d-flex gap-2">
-                            <label class="btn btn-light btn-sm rounded-circle" title="Attach Files">
-                                <i class="fas fa-paperclip"></i>
-                                <input type="file" name="attachments" multiple style="display: none;">
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-primary rounded-pill px-4">
-                            Send Reply <i class="fas fa-paper-plane ms-1"></i>
+                <div class="reply-input-wrapper">
+                    <textarea name="message" class="m3-textarea" rows="3" placeholder="Write your reply..."></textarea>
+                    <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                        <label class="btn-m3-icon" title="Attach Files" style="width: 36px; height: 36px;">
+                            <i class="fas fa-paperclip small"></i>
+                            <input type="file" name="attachments" multiple style="display: none;">
+                        </label>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 btn-sm fw-bold">
+                            Send Reply
                         </button>
                     </div>
                 </div>
@@ -190,12 +242,10 @@
         </div>
     </div>
 
-    <div class="modal fade" id="replyModal" tabindex="-1">...</div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function trashThisMail(uid) {
-            if (!confirm('Tống con mail này vào sọt rác nhé Thành?')) return;
+            if (!confirm('Xóa mail này nhé Thành?')) return;
             $.post('/api/emails/move-to-trash', { uid: uid }, function (res) {
                 window.location.href = '/?msg=Đã dọn dẹp sạch sẽ! 🧹';
             });
