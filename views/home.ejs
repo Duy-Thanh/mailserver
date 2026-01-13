@@ -314,43 +314,52 @@
         let currentBox = 'INBOX';
 
         $(document).ready(function () {
-            // 1. TỰ ĐỘNG ACTIVE TAB KHI LOAD TRANG
-            // Check xem URL có tham số ?box= không, nếu không mặc định là INBOX
+            // 1. CHECK THÔNG BÁO TỪ URL (Nếu có gửi mail xong quay về)
             const urlParams = new URLSearchParams(window.location.search);
-            const boxFromUrl = urlParams.get('box') || 'INBOX';
+            const msg = urlParams.get('msg');
+            if (msg) {
+                alert(msg); // Tạm thời dùng alert cho gắt, hoặc mày tự chế Toast CSS
+            }
 
+            // 2. TỰ ĐỘNG ACTIVE TAB KHI LOAD TRANG
+            const boxFromUrl = (urlParams.get('box') || 'INBOX').toUpperCase();
             loadEmails(boxFromUrl);
 
-            // 2. Real-time quét mail mỗi 30s
+            // 3. Real-time quét mail mỗi 30s
             setInterval(() => loadEmails(currentBox), 30000);
         });
 
         function loadEmails(boxName) {
-            currentBox = boxName;
-            $('#current-box-title').text(boxName);
+            // Chuẩn hóa tên Box về viết hoa để check logic cho chuẩn
+            const targetBox = boxName.toUpperCase();
+            currentBox = targetBox;
 
-            // ĐM THÀNH, ĐOẠN VẢ ACTIVE VÀO SIDEBAR ĐÂY NÀY!
-            $('.nav-link').removeClass('active'); // Xóa hết mấy thằng cũ
+            // Cập nhật title giao diện (Ví dụ: Inbox, Sent, Trash)
+            const displayTitle = targetBox.charAt(0) + targetBox.slice(1).toLowerCase();
+            $('#current-box-title').text(displayTitle);
 
-            // Tìm thằng nav-link nào có chứa text của boxName (Inbox, Sent, Trash)
-            $(`.nav-link`).each(function () {
-                if ($(this).text().trim().includes(boxName)) {
+            // ĐM THÀNH, ĐOẠN NÀY LÀ ĐỂ SIDEBAR SÁNG LÊN ĐÂY!
+            $('.nav-link').removeClass('active');
+            $('.nav-link').each(function () {
+                const linkText = $(this).text().trim().toUpperCase();
+                // So sánh viết hoa hết cho nó khỏi cãi
+                if (linkText.includes(targetBox)) {
                     $(this).addClass('active');
                 }
             });
 
-            const url = `/api/emails?box=${boxName}&_=${Date.now()}`;
+            const url = `/api/emails?box=${targetBox}&_=${Date.now()}`;
 
             $.get(url, function (data) {
                 let $list = $('#email-list');
                 $list.empty();
 
                 if (!data || data.length === 0) {
-                    $list.html(`<div class="p-5 text-center text-muted">Hòm thư ${boxName} trống rỗng</div>`);
+                    $list.html(`<div class="p-5 text-center text-muted">Hòm thư ${displayTitle} trống rỗng</div>`);
                 } else {
                     let html = '';
                     data.forEach(mail => {
-                        let contactDisplay = (boxName === 'Sent') ? `To: ${mail.to || 'Unknown'}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
+                        let contactDisplay = (targetBox === 'SENT') ? `To: ${mail.to || 'Unknown'}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
                         let statusClass = mail.seen ? '' : 'unseen';
 
                         html += `
@@ -368,6 +377,8 @@
                     });
                     $list.html(html);
                 }
+            }).fail(function () {
+                console.error("Đm server lại ngáo rồi, check API đi!");
             });
         }
     </script>
