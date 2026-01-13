@@ -262,19 +262,19 @@
             });
         }
 
-        // ĐOẠN NÀY ĐỂ HIỆN MULTI-FILE
         $('#quick-attach-input').on('change', function () {
             const files = this.files;
-            const $list = $('#selected-files-list');
-            $list.empty();
+            const $display = $('#selected-files-display');
+            $display.empty(); // Xóa sạch để hiện mảng mới chọn
 
             if (files && files.length > 0) {
-                console.log("Mày vừa chọn " + files.length + " file!");
+                console.log(`Mày vừa chọn ${files.length} file đính kèm!`);
+
                 Array.from(files).forEach((f) => {
-                    $list.append(`
-                        <div class="badge bg-primary-subtle text-primary border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-2 me-2">
+                    $display.append(`
+                        <div class="badge bg-primary-subtle text-primary border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-1">
                             <i class="fas fa-file-alt"></i> 
-                            <span class="text-truncate" style="max-width: 150px;">${f.name}</span>
+                            <span class="text-truncate" style="max-width: 200px;">${f.name}</span>
                             <i class="fas fa-check-circle text-success"></i>
                         </div>
                     `);
