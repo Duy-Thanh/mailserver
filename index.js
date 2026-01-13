@@ -231,26 +231,45 @@ app.post('/send', requireLogin, upload.array('attachments'), async (req, res) =>
 
 app.get('/api/emails', async (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Chưa đăng nhập!' });
-    const boxName = req.query.box || 'INBOX';
+
+    // ĐM THÀNH, PHẢI CHUẨN HÓA TÊN HÒM THƯ Ở ĐÂY
+    let boxName = req.query.box || 'INBOX';
+
     try {
         const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
-        await connection.openBox(boxName);
-        const messages = await connection.search(['ALL'], { bodies: ['HEADER'], markSeen: false });
+
+        // KIỂM TRA VÀ TỰ ĐỘNG CHỈNH TÊN HÒM THƯ NẾU LỖI
+        try {
+            await connection.openBox(boxName);
+        } catch (openErr) {
+            console.log(`Hòm ${boxName} đéo mở được, thử mở INBOX...`);
+            await connection.openBox('INBOX');
+            boxName = 'INBOX';
+        }
+
+        const fetchOptions = { bodies: ['HEADER'], markSeen: false, struct: true };
+        const messages = await connection.search(['ALL'], fetchOptions);
 
         const emails = messages.map(msg => {
-            const header = msg.parts.filter(part => part.which === 'HEADER')[0].body;
+            const headerPart = msg.parts.find(p => p.which === 'HEADER');
+            const header = headerPart ? headerPart.body : {};
+
             return {
                 id: msg.attributes.uid,
-                from: header.from[0],
-                subject: header.subject[0],
-                date: header.date[0],
-                // VẢ CÁI NÀY VÀO CHO TAO!
-                seen: msg.attributes.flags.includes('\\Seen')
+                from: (header.from && header.from[0]) ? header.from[0] : 'Unknown',
+                to: (header.to && header.to[0]) ? header.to[0] : 'Unknown',
+                subject: (header.subject && header.subject[0]) ? header.subject[0] : '(No Subject)',
+                date: (header.date && header.date[0]) ? header.date[0] : new Date(),
+                seen: msg.attributes.flags && msg.attributes.flags.includes('\\Seen')
             };
         });
+
         connection.end();
         res.json(emails.reverse());
-    } catch (err) { res.status(500).json({ error: err.message }); }
+    } catch (err) {
+        console.error("CRASH CMNR THÀNH ƠI:", err);
+        res.status(500).json({ error: "Đéo lấy được mail: " + err.message });
+    }
 });
 
 app.post('/api/emails/move-to-trash', async (req, res) => {
