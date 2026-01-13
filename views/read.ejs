@@ -261,6 +261,28 @@
                 window.location.href = '/?msg=Đã dọn dẹp sạch sẽ! 🧹';
             });
         }
+
+        $('#quick-attach-input').on('change', function () {
+            const fileList = this.files;
+            const $container = $('#selected-files-list');
+            $container.empty(); // Xóa cũ hiện mới
+
+            if (fileList.length > 0) {
+                Array.from(fileList).forEach(file => {
+                    $container.append(`
+                    <span class="badge bg-light text-dark border p-2 rounded-pill small">
+                        <i class="fas fa-file-alt me-1 text-primary"></i> ${file.name}
+                        <i class="fas fa-times ms-2 text-danger" style="cursor:pointer" onclick="clearFiles()"></i>
+                    </span>
+                `);
+                });
+            }
+        });
+
+        function clearFiles() {
+            $('#quick-attach-input').val(''); // Reset input
+            $('#selected-files-list').empty(); // Xóa giao diện
+        }
     </script>
 </body>
 

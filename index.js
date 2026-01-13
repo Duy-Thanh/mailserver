@@ -189,35 +189,41 @@ app.post('/send', requireLogin, upload.array('attachments'), async (req, res) =>
     const { to, subject, message } = req.body;
 
     try {
-        // ĐM THÀNH, PHẢI DUYỆT HẾT REQ.FILES THẾ NÀY NÀY!
+        // 1. DUYỆT HẾT FILE - Gửi 1 hay 10 file cũng nhận hết!
         const mailAttachments = req.files ? req.files.map(f => ({
-            filename: f.originalname, // Tên file gốc
-            path: f.path,             // Đường dẫn tạm trên server
-            contentType: f.mimetype   // Kiểu file để Gmail nó đéo chặn
+            filename: f.originalname,
+            path: f.path
         })) : [];
 
-        // 1. Gửi mail đi với ARRAY attachments
-        const info = await transporter.sendMail({
+        const mailOptions = {
             from: `"${req.session.user}" <${req.session.user}>`,
-            to, subject,
+            to,
+            subject,
             html: message.replace(/\n/g, '<br>'),
-            attachments: mailAttachments // Thằng nodemailer nó tự hiểu mảng này
-        });
+            attachments: mailAttachments
+        };
 
-        // 2. Chép vào hòm Sent (Giữ nguyên logic cũ nhưng info.message thô)
+        // 2. GỬI MAIL ĐI
+        await transporter.sendMail(mailOptions);
+
+        // 3. CHÉP VÀO HÒM SENT (Dùng build-in của nodemailer-mail-composer hoặc cách thủ công)
+        // Lưu ý: Để đơn giản và không lỗi toString, ta tạo connection và append nội dung text đơn giản
+        // hoặc dùng thư viện MailComposer. Nhưng ở đây tao cho mày cách an toàn nhất:
         const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
-        await connection.append(info.message.toString(), { box: 'Sent', flags: ['\\Seen'] });
+
+        // Tạo nội dung thô để lưu hòm Sent (Tránh lỗi .message.toString())
+        const rawContent = `To: ${to}\r\nSubject: ${subject}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n${message}`;
+
+        await connection.append(rawContent, { box: 'Sent', flags: ['\\Seen'] });
         await connection.end();
 
-        // 3. DỌN DẸP SẠCH SẼ (Tránh đầy ổ cứng EC2)
+        // 4. DỌN RÁC TRÊN EC2
         const fs = require('fs');
-        mailAttachments.forEach(file => {
-            if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
-        });
+        mailAttachments.forEach(file => fs.unlinkSync(file.path));
 
-        res.redirect('/?msg=Email sent successfully! 🚀');
+        res.redirect('/?msg=Gửi thành công cmnr Thành ơi! 🚀');
     } catch (err) {
-        console.error("Gửi mail lỗi rồi Thành ơi:", err);
+        console.error("LỖI GỬI MAIL:", err);
         res.status(500).send("Send Error: " + err.message);
     }
 });
