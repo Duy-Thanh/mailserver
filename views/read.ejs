@@ -104,20 +104,24 @@
                 color: var(--md-primary) !important;
             }
 
-            /* REPLY BOX DARK */
+            /* FIX CÁI Ô TRẮNG BẨN MẮT CỦA MÀY ĐÂY */
             .reply-container {
                 background-color: var(--md-reply-bg) !important;
-                border-radius: 32px !important;
             }
 
             .reply-input-wrapper {
-                background: #2b2b2f !important;
+                background-color: var(--md-textarea-bg) !important;
                 border-color: var(--md-outline) !important;
-                border-radius: 24px !important;
             }
 
             textarea.m3-textarea {
+                background-color: transparent !important;
                 color: #ffffff !important;
+                /* CHỮ PHẢI TRẮNG */
+            }
+
+            textarea.m3-textarea::placeholder {
+                color: #8e9099 !important;
             }
 
             .avatar-m3 {
