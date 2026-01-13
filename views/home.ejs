@@ -29,13 +29,11 @@
                 --md-sys-color-primary-container: #004494;
                 --md-sys-color-on-primary-container: #d8e2ff;
                 --md-sys-color-surface: #1b1b1f;
-                /* Nền chính tối */
                 --md-sys-color-surface-container: #2b2b2f;
-                /* Nền sidebar/search tối */
                 --md-sys-color-on-surface: #e3e2e6;
-                /* Màu chữ sáng */
                 --md-sys-color-outline-variant: #44474e;
-                --md-sys-color-secondary-container: #44474e;
+                --md-sys-color-secondary-container: #3b3f46;
+                /* Sáng hơn nền để thấy nút */
             }
 
             /* FIX TIÊU ĐỀ JAVALORANT & NAVBAR */
@@ -46,77 +44,74 @@
 
             .navbar-brand {
                 color: var(--md-sys-color-primary) !important;
-                /* Cho tiêu đề sáng lên màu xanh đặc trưng */
+                font-weight: 700 !important;
+                text-shadow: 0 0 10px rgba(173, 198, 255, 0.3);
             }
 
-            .text-muted {
-                color: #909094 !important;
-            }
-
-            /* 2. FIX THANH TABS (SIDEBAR LINKS) - HẾT ĐEN XÌ LÌ */
+            /* 2. FIX THANH TABS SIDEBAR - HẾT ĐEN XÌ LÌ */
             .nav-link {
                 color: #c4c6d0 !important;
+                /* Chữ tab chưa chọn màu xám sáng */
                 background: transparent !important;
             }
 
+            .nav-link:hover {
+                background-color: rgba(255, 255, 255, 0.08) !important;
+            }
+
             .nav-link.active {
-                /* DÙNG MÀU XANH SÁNG ĐẶC TRƯNG CỦA MATERIAL YOU */
+                /* VẢ MÀU XANH SÁNG NÀY VÀO CHO NÓ RỰC RỠ */
                 background-color: #d8e2ff !important;
                 color: #001a41 !important;
-                /* Chữ xanh đậm trên nền xanh sáng */
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+                /* Chữ xanh đậm trên nền sáng */
+                font-weight: 700 !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
             }
 
-            .nav-link:hover:not(.active) {
-                background-color: var(--md-sys-color-secondary-container) !important;
+            .nav-link.active i {
+                color: #001a41 !important;
             }
 
-            /* FIX NỘI DUNG HÒM THƯ */
+            /* FIX NÚT REFRESH & HEADER CONTENT */
             .content-area {
-                background-color: #232326 !important;
+                background-color: #1b1b1f !important;
                 border-color: var(--md-sys-color-outline-variant) !important;
             }
 
             .card-header {
                 border-bottom-color: var(--md-sys-color-outline-variant) !important;
+                background: #232326 !important;
             }
 
             #current-box-title {
-                color: var(--md-sys-color-on-surface);
+                color: var(--md-sys-color-primary) !important;
             }
 
-            /* FIX NÚT REFRESH - KHÔNG CHO ĐEN XÌ LÌ NỮA */
+            /* NÚT REFRESH PHẢI CÓ KHỐI */
             .btn-light,
             .btn-refresh,
             .card-header button {
-                background-color: var(--md-sys-color-surface-container) !important;
+                background-color: #3b3f46 !important;
                 color: var(--md-sys-color-primary) !important;
                 border: 1px solid var(--md-sys-color-outline-variant) !important;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             }
 
             .btn-light:hover {
-                background-color: var(--md-sys-color-secondary-container) !important;
+                background-color: #4f535a !important;
             }
 
             /* FIX EMAIL ITEM */
             .email-item {
-                border-bottom-color: rgba(255, 255, 255, 0.05) !important;
-                color: var(--md-sys-color-on-surface);
+                border-bottom-color: #33353a !important;
             }
 
-            .email-snippet {
-                color: #c4c6d0 !important;
+            .email-item:hover {
+                background-color: #2b2b2f !important;
             }
 
             .unseen {
-                background-color: rgba(0, 86, 214, 0.15) !important;
-                /* Nền mail chưa đọc xanh đậm chất Dark Mode */
-            }
-
-            /* FIX SEARCH BAR TRONG DARK MODE */
-            .search-bar {
-                background: var(--md-sys-color-surface-container) !important;
-                color: white !important;
+                background-color: rgba(0, 86, 214, 0.1) !important;
             }
         }
 
