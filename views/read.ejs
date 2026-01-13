@@ -258,6 +258,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // BIẾN THẦN THÁNH ĐỂ GIỮ FILE QUA NHIỀU LẦN CHỌN
+        let selectedFilesArray = [];
+
         function trashThisMail(uid) {
             if (!confirm('Xóa mail này nhé Thành?')) return;
             $.post('/api/emails/move-to-trash', { uid: uid }, function (res) {
@@ -265,32 +268,65 @@
             });
         }
 
-        // ĐM THÀNH, ĐOẠN NÀY PHẢI NẰM TRONG THẺ SCRIPT VÀ ĐÚNG ID NHƯ NÀY!
-        $('#quick-attach-input').on('change', function () {
-            const files = this.files;
-            const $display = $('#selected-files-display'); // Khớp với ID div ở trên
-            $display.empty();
+        // LOGIC CHỌN NHIỀU FILE (CỘNG DỒN)
+        $('#quick-attach-input').on('change', function (e) {
+            const newFiles = Array.from(this.files);
 
-            if (files && files.length > 0) {
-                console.log(`Mày vừa chọn ${files.length} file đính kèm!`);
+            // Cộng dồn file mới vào mảng cũ
+            selectedFilesArray = [...selectedFilesArray, ...newFiles];
 
-                Array.from(files).forEach((f) => {
-                    $display.append(`
-                        <div class="badge bg-primary-subtle text-primary border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-1 me-1">
-                            <i class="fas fa-file-alt"></i> 
-                            <span class="text-truncate" style="max-width: 150px;">${f.name}</span>
-                            <i class="fas fa-check-circle text-success"></i>
-                        </div>
-                    `);
-                });
-            }
+            renderFiles();
         });
 
-        // Hàm reset cho sạch sẽ
-        function clearAllFiles() {
-            $('#quick-attach-input').val('');
-            $('#selected-files-display').empty();
+        function renderFiles() {
+            const $display = $('#selected-files-display');
+            $display.empty();
+
+            selectedFilesArray.forEach((f, index) => {
+                $display.append(`
+                <div class="badge bg-primary-subtle text-primary border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-1 me-1" style="max-width: fit-content;">
+                    <i class="fas fa-file-alt"></i> 
+                    <span class="text-truncate" style="max-width: 120px;">${f.name}</span>
+                    <i class="fas fa-times-circle text-danger" style="cursor:pointer" onclick="removeFile(${index})" title="Xóa"></i>
+                </div>
+            `);
+            });
         }
+
+        function removeFile(index) {
+            selectedFilesArray.splice(index, 1); // Xóa file khỏi mảng
+            renderFiles(); // Vẽ lại giao diện
+        }
+
+        // ĐM THÀNH, KHI BẤM SEND PHẢI DÙNG FORM DATA ĐỂ GỬI CÁI MẢNG NÀY ĐI
+        $('form').on('submit', function (e) {
+            e.preventDefault(); // Chặn gửi form mặc định
+
+            const formData = new FormData(this);
+
+            // Xóa attachments cũ trong formData (nếu có)
+            formData.delete('attachments');
+
+            // Vả toàn bộ mảng file tích lũy vào FormData
+            selectedFilesArray.forEach(file => {
+                formData.append('attachments', file);
+            });
+
+            // Gửi bằng Ajax cho nó "khét"
+            $.ajax({
+                url: '/send',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    window.location.href = '/?msg=Gửi thành công cmnr! 🚀';
+                },
+                error: function (err) {
+                    alert('Lỗi đéo gửi được: ' + err.responseText);
+                }
+            });
+        });
     </script>
 </body>
 
