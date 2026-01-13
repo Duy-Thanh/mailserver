@@ -12,6 +12,7 @@
     <style>
         :root {
             --md-sys-color-primary: #0056d6;
+            --md-sys-color-on-primary: #ffffff;
             --md-sys-color-primary-container: #d8e2ff;
             --md-sys-color-on-primary-container: #001a41;
             --md-sys-color-surface: #fdfbff;
@@ -19,12 +20,13 @@
             --md-sys-color-on-surface: #1b1b1f;
             --md-sys-color-outline-variant: #c4c6d0;
             --md-sys-color-secondary-container: #e1e2ec;
-            --md-sys-color-on-secondary-container: #1b1b1f;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
+                /* Bảng màu Material 3 Dark chuẩn Google */
                 --md-sys-color-primary: #adc6ff;
+                --md-sys-color-on-primary: #002e69;
                 --md-sys-color-primary-container: #004494;
                 --md-sys-color-on-primary-container: #d8e2ff;
                 --md-sys-color-surface: #1b1b1f;
@@ -32,7 +34,68 @@
                 --md-sys-color-on-surface: #e3e2e6;
                 --md-sys-color-outline-variant: #44474e;
                 --md-sys-color-secondary-container: #44474e;
-                --md-sys-color-on-secondary-container: #e3e2e6;
+                --item-hover: rgba(255, 255, 255, 0.08);
+            }
+
+            /* Vá lỗi hiển thị text trên nền tối */
+            body {
+                background: #1b1b1f !important;
+                color: #e3e2e6 !important;
+            }
+
+            .content-area {
+                background-color: #232326 !important;
+                border-color: #44474e !important;
+            }
+
+            .email-item {
+                border-bottom-color: #33353a !important;
+            }
+
+            .email-item:hover {
+                background-color: #2f3036 !important;
+            }
+
+            .unseen {
+                background-color: #252a35 !important;
+            }
+
+            .email-snippet {
+                color: #c4c6d0 !important;
+            }
+
+            .text-muted {
+                color: #909094 !important;
+            }
+
+            .modal-content {
+                background-color: #1b1b1f !important;
+                color: #e3e2e6 !important;
+            }
+
+            .form-control {
+                background-color: #2b2b2f !important;
+                color: #e3e2e6 !important;
+                border: 1px solid #44474e !important;
+            }
+
+            .form-control:focus {
+                background-color: #2b2b2f !important;
+                color: white !important;
+            }
+
+            .search-bar {
+                background: #2b2b2f !important;
+                color: white !important;
+            }
+
+            .nav-link {
+                color: #c4c6d0 !important;
+            }
+
+            .nav-link.active {
+                background-color: var(--md-sys-color-primary-container) !important;
+                color: white !important;
             }
         }
 
@@ -52,171 +115,289 @@
             color: var(--md-sys-color-on-surface);
         }
 
-        /* NAVBAR LUXURY */
+        /* NAVBAR M3 VỚI SEARCH BAR */
         .navbar {
             height: 72px;
-            padding: 0 24px !important;
-            border-bottom: none !important;
+            background: var(--md-sys-color-surface) !important;
+            padding: 0 24px;
+            gap: 24px;
         }
 
-        .navbar-brand {
-            font-size: 24px !important;
-            font-weight: 500 !important;
-            color: var(--md-sys-color-on-surface) !important;
-            letter-spacing: -0.5px;
+        .search-container {
+            flex: 1;
+            max-width: 720px;
+            position: relative;
         }
 
-        /* SEARCH BAR "HFT" */
         .search-bar {
-            background: var(--md-sys-color-surface-container) !important;
-            border: none !important;
-            color: var(--md-sys-color-on-surface) !important;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            background: var(--md-sys-color-surface-container);
+            border: none;
+            border-radius: 28px;
+            padding: 12px 24px 12px 56px;
+            width: 100%;
+            height: 48px;
+            transition: 0.2s;
         }
 
         .search-bar:focus {
-            background: var(--md-sys-color-surface) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-            width: 110% !important;
+            outline: none;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 14px;
+            color: #44474e;
         }
 
         .main-wrapper {
             display: flex;
             flex: 1;
             overflow: hidden;
-            padding: 0 16px 16px 16px;
-            gap: 8px;
+            padding: 0 12px 12px 12px;
         }
 
-        /* SIDEBAR CHUẨN M3 */
+        /* SIDEBAR NÂNG CẤP */
         .sidebar-container {
             width: 280px;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
+            padding-right: 12px;
         }
 
         .btn-compose {
-            height: 56px;
-            border-radius: 16px !important;
-            font-size: 16px;
-            font-weight: 600;
-            background: var(--md-sys-color-primary-container) !important;
-            color: var(--md-sys-color-on-primary-container) !important;
-            margin-bottom: 24px !important;
-            border: none !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border: none;
+            padding: 18px 28px;
+            border-radius: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 8px 0 24px 0;
+            transition: 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .btn-compose:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transform: scale(1.02);
+            transform: translateY(-1px);
         }
 
         .nav-link {
-            color: var(--md-sys-color-on-surface) !important;
-            border-radius: 28px !important;
-            padding: 12px 24px !important;
-            margin-bottom: 8px !important;
+            color: #44474e;
+            border-radius: 28px;
+            padding: 12px 24px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
             gap: 16px;
             transition: 0.2s;
             font-weight: 500;
+            cursor: pointer;
         }
 
         .nav-link.active {
             background-color: var(--md-sys-color-secondary-container) !important;
-            color: var(--md-sys-color-on-secondary-container) !important;
-            font-weight: 700;
+            color: #1b1b1f !important;
         }
 
         .nav-link:hover:not(.active) {
-            background-color: rgba(128, 128, 128, 0.1);
+            background-color: rgba(0, 0, 0, 0.05);
         }
 
-        /* CONTENT AREA MƯỚT RƯỢT */
+        /* CONTENT AREA - CARD NỔI BẬT */
         .content-area {
             flex: 1;
             background-color: white;
-            border-radius: 28px !important;
+            border-radius: 32px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border: 1px solid var(--md-sys-color-outline-variant) !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--md-sys-color-outline-variant);
         }
 
-        @media (prefers-color-scheme: dark) {
-            .content-area {
-                background-color: #212124 !important;
-            }
+        #email-list {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
         }
 
-        .card-header {
-            padding: 16px 24px !important;
-            min-height: 80px;
-            border-bottom: 1px solid var(--md-sys-color-outline-variant) !important;
-        }
-
-        #current-box-title {
-            font-size: 28px !important;
-            font-weight: 400 !important;
-            letter-spacing: -0.5px;
-        }
-
-        /* REFRESH BUTTON "XỊN" */
-        .btn-refresh {
-            width: 40px;
-            height: 40px;
-            border-radius: 20px !important;
+        /* EMAIL ITEM STYLE */
+        .email-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: 0.3s;
-            color: var(--md-sys-color-on-surface);
-        }
-
-        .btn-refresh:hover {
-            background: var(--md-sys-color-surface-container);
-            transform: rotate(180deg);
-        }
-
-        /* EMAIL LIST & ITEM */
-        .email-item {
-            padding: 14px 24px !important;
-            margin: 2px 8px !important;
-            border-radius: 16px !important;
-            border: none !important;
-            gap: 20px !important;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f1f1;
+            transition: 0.1s;
+            position: relative;
+            gap: 16px;
         }
 
         .email-item:hover {
             background-color: var(--md-sys-color-surface-container) !important;
-            transform: none !important;
-        }
-
-        .avatar-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 22px;
-            font-size: 18px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            box-shadow: inset 0 0 0 1px var(--md-sys-color-outline-variant);
         }
 
         .unseen {
-            background-color: var(--md-sys-color-secondary-container) !important;
-            opacity: 0.95;
+            background-color: #f0f4ff !important;
         }
 
-        .unseen .email-title {
-            font-weight: 800 !important;
+        .unseen::after {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background: var(--md-sys-color-primary);
+            border-radius: 50%;
+            position: absolute;
+            left: 8px;
         }
 
-        /* SNACKBAR M3 */
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: var(--md-sys-color-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .email-title {
+            font-size: 15px;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .email-snippet {
+            font-size: 14px;
+            color: #44474e;
+        }
+
+        .email-date {
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* SNACKBAR / TOAST M3 */
+        .m3-toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 2000;
+        }
+
         .m3-snackbar {
-            border-radius: 8px !important;
-            border-left: 4px solid var(--md-sys-color-primary);
+            background: #313033;
+            color: #f4eff4;
+            padding: 14px 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+            min-width: 320px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        avatar-circle {
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-item {
+            border-radius: 12px;
+            /* Bo góc nhẹ cho từng item trong list */
+            margin: 4px 8px;
+            border: none !important;
+        }
+
+        .email-item:hover {
+            transform: scale(1.005);
+            z-index: 10;
+            background-color: var(--md-sys-color-primary-container) !important;
+        }
+
+        /* Animation cho mail mới nổ ra */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .email-item {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Thanh search "thông minh" */
+        .search-bar:focus {
+            max-width: 800px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .card-header {
+            background: transparent !important;
+            padding: 20px 24px;
+            /* Tăng padding cho thoáng */
+            border-bottom: 1px solid var(--md-sys-color-outline-variant) !important;
+            display: flex;
+            align-items: center;
+            min-height: 72px;
+            /* Khóa chiều cao để không bị lệch */
+        }
+
+        #current-box-title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            /* Đảm bảo chữ không bị đè */
+            padding-left: 8px;
+        }
+
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-item:hover .avatar-circle {
+            transform: scale(1.1);
         }
     </style>
 </head>
