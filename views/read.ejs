@@ -40,6 +40,37 @@
                 border-color: var(--md-surface-variant) !important;
             }
 
+            /* ĐM THÀNH, CHIÊU CUỐI ĐÂY: ÉP TẤT CẢ CHỮ TRONG BODY PHẢI SÁNG */
+            .email-body,
+            .email-body * {
+                color: var(--md-on-surface) !important;
+                background-color: transparent !important;
+                /* Xóa luôn mấy cái nền trắng inline lỏ */
+            }
+
+            /* Fix riêng cho mấy cái link cho nó nổi */
+            .email-body a,
+            .email-body a * {
+                color: var(--md-primary) !important;
+                text-decoration: underline !important;
+            }
+
+            /* Fix đoạn Quoted text (cái vạch dọc bên trái) */
+            .email-body blockquote {
+                border-left: 3px solid var(--md-primary) !important;
+                padding-left: 16px !important;
+                margin-left: 4px !important;
+                opacity: 0.8;
+            }
+
+            /* Fix cho các đoạn văn bản thô (pre-formatted) */
+            .email-body pre {
+                background-color: #2b2b2f !important;
+                padding: 12px !important;
+                border-radius: 8px !important;
+                color: var(--md-on-surface) !important;
+            }
+
             /* ĐM THÀNH, PHẢI VẢ THẰNG NÀY NÀY! */
             .text-dark,
             .email-subject,
