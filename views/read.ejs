@@ -234,9 +234,10 @@
                 <input type="hidden" name="to" value="<%= mail.from.value[0].address %>">
                 <input type="hidden" name="subject" value="Re: <%= mail.subject %>">
                 <div class="reply-input-wrapper">
-                    <textarea name="message" class="m3-textarea" rows="3" placeholder="Write your reply..."></textarea>
+                    <textarea name="message" class="m3-textarea" rows="3"
+                        placeholder="Viết phản hồi cho đại gia Thành..."></textarea>
 
-                    <div id="selected-files-list" class="d-flex flex-wrap gap-2 px-2 pb-2"></div>
+                    <div id="selected-files-display" class="d-flex flex-wrap gap-2 px-2 pb-2"></div>
 
                     <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
                         <label class="btn-m3-icon" title="Attach Files"
@@ -245,8 +246,9 @@
                             <input type="file" name="attachments" id="quick-attach-input" multiple
                                 style="display: none;">
                         </label>
-                        <button type="submit" class="btn btn-primary rounded-pill px-4 btn-sm fw-bold">Send
-                            Reply</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 btn-sm fw-bold shadow-sm">
+                            Send Reply <i class="fas fa-paper-plane ms-1"></i>
+                        </button>
                     </div>
                 </div>
             </form>
