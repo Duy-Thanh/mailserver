@@ -262,16 +262,17 @@
             });
         }
 
-        // ĐM THÀNH, NHÌN CÁI ID CHO KỸ: quick-attach-input
+        // ĐOẠN NÀY ĐỂ HIỆN MULTI-FILE ĐÂY, NHÌN CHO KỸ!
         $('#quick-attach-input').on('change', function () {
             const files = this.files;
-            const $list = $('#selected-files-list'); // ID này phải khớp với cái div trên HTML của mày
-            $list.empty();
+            const $list = $('#selected-files-list');
+            $list.empty(); // Xóa sạch cái cũ để nạp lại cả mảng mới
 
-            if (files.length > 0) {
-                Array.from(files).forEach((f, index) => {
+            if (files && files.length > 0) {
+                // Duyệt qua từng file một trong danh sách mày vừa chọn
+                Array.from(files).forEach((f) => {
                     $list.append(`
-                        <div class="badge bg-secondary-subtle text-dark border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-2" style="transition: 0.2s;">
+                        <div class="badge bg-secondary-subtle text-dark border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-2 me-2" style="transition: 0.2s;">
                             <i class="fas fa-file-alt text-primary"></i> 
                             <span class="text-truncate" style="max-width: 150px;">${f.name}</span>
                             <i class="fas fa-times-circle text-danger ms-1" style="cursor:pointer" onclick="clearAllFiles()" title="Xóa hết chọn lại"></i>
@@ -282,8 +283,8 @@
         });
 
         function clearAllFiles() {
-            $('#quick-attach-input').val('');
-            $('#selected-files-list').empty();
+            $('#quick-attach-input').val(''); // Reset input file
+            $('#selected-files-list').empty(); // Xóa sạch giao diện các Badge
         }
     </script>
 </body>
