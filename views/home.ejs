@@ -284,6 +284,44 @@
             max-width: 800px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
         }
+
+        .card-header {
+            background: transparent !important;
+            padding: 20px 24px;
+            /* Tăng padding cho thoáng */
+            border-bottom: 1px solid var(--md-sys-color-outline-variant) !important;
+            display: flex;
+            align-items: center;
+            min-height: 72px;
+            /* Khóa chiều cao để không bị lệch */
+        }
+
+        #current-box-title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            /* Đảm bảo chữ không bị đè */
+            padding-left: 8px;
+        }
+
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .email-item:hover .avatar-circle {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 
