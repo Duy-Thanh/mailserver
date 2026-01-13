@@ -53,23 +53,21 @@
                 color: #909094 !important;
             }
 
-            /* FIX TABS (SIDEBAR LINKS) */
-            .sidebar-container {
-                background: var(--md-sys-color-surface);
-            }
-
+            /* FIX THANH TABS (SIDEBAR LINKS) - CHỖ MÀY CAY NHẤT ĐÂY */
             .nav-link {
                 color: #c4c6d0 !important;
-                /* Chữ Tab chưa chọn màu xám nhạt */
-            }
-
-            .nav-link:hover {
-                background-color: rgba(255, 255, 255, 0.08) !important;
+                /* Màu chữ tab chưa chọn */
             }
 
             .nav-link.active {
-                background-color: var(--md-sys-color-primary-container) !important;
-                color: var(--md-sys-color-on-primary-container) !important;
+                /* DÙNG PRIMARY CONTAINER CHO NÓ XANH NGẮT NHƯ GMAIL XỊN */
+                background-color: #d8e2ff !important;
+                color: #001a41 !important;
+                /* Chữ xanh đậm trên nền xanh sáng */
+            }
+
+            .nav-link:hover:not(.active) {
+                background-color: var(--md-sys-color-secondary-container) !important;
             }
 
             /* FIX NỘI DUNG HÒM THƯ */
