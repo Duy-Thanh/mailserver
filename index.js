@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const imaps = require('imap-simple');
 const simpleParser = require('mailparser').simpleParser;
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -185,19 +187,32 @@ app.get('/download/:uid/:filename', requireLogin, async (req, res) => {
 });
 
 // 4. SEND MAIL
-app.post('/send', requireLogin, async (req, res) => {
+app.post('/send', requireLogin, upload.array('attachments'), async (req, res) => {
     const transporter = getSmtpTransport(req.session.user, req.session.pass);
 
     try {
+        // Gom đống file người dùng upload lên
+        const mailAttachments = req.files ? req.files.map(f => ({
+            filename: f.originalname,
+            path: f.path
+        })) : [];
+
         await transporter.sendMail({
             from: `"${req.session.user}" <${req.session.user}>`,
             to: req.body.to,
             subject: req.body.subject,
-            html: req.body.message.replace(/\n/g, '<br>')
+            html: req.body.message.replace(/\n/g, '<br>'),
+            attachments: mailAttachments // <--- Vả đống file vào đây
         });
+
+        // Gửi xong thì dọn dẹp file tạm cho server nó sạch (Optional nhưng nên làm)
+        const fs = require('fs');
+        mailAttachments.forEach(file => fs.unlinkSync(file.path));
+
         res.redirect('/?msg=Email sent successfully! 🚀');
     } catch (err) {
-        res.send("Send Error: " + err);
+        console.error(err);
+        res.send("Send Error: " + err.message);
     }
 });
 
