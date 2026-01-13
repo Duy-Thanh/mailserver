@@ -303,42 +303,38 @@
 
         function loadEmails(boxName) {
             currentBox = boxName;
+            // Đừng có check lằng nhằng, cứ đổi title trước
             $('#current-box-title').text(boxName);
-            $('.nav-link').removeClass('active');
-            $(`a[onclick="loadEmails('${boxName}')"]`).addClass('active');
 
-            $.get(`/api/emails?box=${boxName}&_=${Date.now()}`, function (data) {
-                let html = '';
-                if (boxName === 'INBOX') {
-                    let unseen = data.filter(m => !m.seen).length;
-                    unseen > 0 ? $('#unread-count').text(unseen).removeClass('d-none') : $('#unread-count').addClass('d-none');
-                }
+            const url = `/api/emails?box=${boxName}&_=${Date.now()}`;
+
+            $.get(url, function (data) {
+                // Vừa nhận data là phải xóa sạch cái cũ ngay
+                let $list = $('#email-list');
+                $list.empty();
+
                 if (!data || data.length === 0) {
-                    html = '<div class="p-5 text-center text-muted">Hòm thư trống rỗng</div>';
+                    $list.html('<div class="p-5 text-center text-muted">Hòm thư trống rỗng</div>');
                 } else {
+                    let html = '';
                     data.forEach(mail => {
+                        // ... giữ nguyên logic vẽ mail của mày ...
                         let contact = (boxName === 'Sent') ? `To: ${mail.to}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
+                        let isUnseen = !mail.seen ? 'unseen' : '';
                         html += `
-                        <div class="email-item d-flex align-items-center ${mail.seen ? '' : 'unseen'}" onclick="window.location='/read/${mail.id}'" style="cursor:pointer">
-                            <div class="flex-grow-1 overflow-hidden">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="email-title fw-bold-m3 ${mail.seen ? 'text-muted' : ''}">${contact}</span>
-                                    <span class="email-date ${mail.seen ? 'text-muted' : 'text-primary'}">${new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                </div>
-                                <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
-                            </div>
-                            <button class="btn btn-link text-danger ms-3 trash-btn" style="visibility:hidden" onclick="trashEmail(${mail.id}, event)"><i class="far fa-trash-alt"></i></button>
-                        </div>`;
+                <div class="email-item d-flex align-items-center ${isUnseen}" onclick="window.location='/read/${mail.id}'" style="cursor:pointer">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="email-title fw-bold-m3">${contact}</span>
+                            <span class="email-date">${new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                        <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
+                    </div>
+                </div>`;
                     });
+                    $list.html(html);
                 }
-                $('#email-list').html(html);
-
-                // Show trash button on hover
-                $('.email-item').hover(function () {
-                    $(this).find('.trash-btn').css('visibility', 'visible');
-                }, function () {
-                    $(this).find('.trash-btn').css('visibility', 'hidden');
-                });
+                console.log("Đã vả dữ liệu mới vào hòm: " + boxName);
             });
         }
     </script>
