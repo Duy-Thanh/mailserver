@@ -8,7 +8,6 @@
     </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
         :root {
             --md-surface: #fdfbff;
@@ -255,7 +254,9 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
         function trashThisMail(uid) {
             if (!confirm('Xóa mail này nhé Thành?')) return;
@@ -264,19 +265,20 @@
             });
         }
 
+        // ĐM THÀNH, ĐOẠN NÀY PHẢI NẰM TRONG THẺ SCRIPT VÀ ĐÚNG ID NHƯ NÀY!
         $('#quick-attach-input').on('change', function () {
             const files = this.files;
-            const $display = $('#selected-files-display');
-            $display.empty(); // Xóa sạch để hiện mảng mới chọn
+            const $display = $('#selected-files-display'); // Khớp với ID div ở trên
+            $display.empty();
 
             if (files && files.length > 0) {
                 console.log(`Mày vừa chọn ${files.length} file đính kèm!`);
 
                 Array.from(files).forEach((f) => {
                     $display.append(`
-                        <div class="badge bg-primary-subtle text-primary border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-1">
+                        <div class="badge bg-primary-subtle text-primary border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-1 me-1">
                             <i class="fas fa-file-alt"></i> 
-                            <span class="text-truncate" style="max-width: 200px;">${f.name}</span>
+                            <span class="text-truncate" style="max-width: 150px;">${f.name}</span>
                             <i class="fas fa-check-circle text-success"></i>
                         </div>
                     `);
@@ -284,9 +286,10 @@
             }
         });
 
+        // Hàm reset cho sạch sẽ
         function clearAllFiles() {
-            $('#quick-attach-input').val(''); // Reset input file
-            $('#selected-files-list').empty(); // Xóa sạch giao diện các Badge
+            $('#quick-attach-input').val('');
+            $('#selected-files-display').empty();
         }
     </script>
 </body>
