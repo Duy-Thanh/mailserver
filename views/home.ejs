@@ -431,16 +431,21 @@
                 if ($(this).text().trim().toLowerCase().includes(boxName.toLowerCase())) $(this).addClass('active');
             });
 
-            $.get(`/api/emails?box=${boxName}&_=${Date.now()}`, function (data) {
-                allEmails = data; // Lưu lại để search
+            // HIỆN SPINNER KHI ĐANG TẢI
+            $('#email-list').html('<div class="text-center p-5"><div class="spinner-border text-primary"></div></div>');
 
+            $.get(`/api/emails?box=${boxName}&_=${Date.now()}`, function (data) {
+                allEmails = data;
                 if (boxName.toUpperCase() === 'INBOX') {
                     const unread = data.filter(m => !m.seen).length;
                     unread > 0 ? $('#unread-count').text(unread).removeClass('d-none') : $('#unread-count').addClass('d-none');
                 }
                 renderEmailList(data);
             }).fail(function (xhr) {
-                showSnackbar(`Server lag rồi Thành ơi, load lại đê!`);
+                // VẢ THÔNG BÁO LỖI VÀO SNACKBAR
+                const errMsg = xhr.responseJSON ? xhr.responseJSON.error : "Server ngỏm củ tỏi!";
+                showSnackbar(`ĐM: ${errMsg}`);
+                $('#email-list').html(`<div class="p-5 text-center text-danger"><i class="fas fa-exclamation-triangle mb-3 fs-1"></i><br>${errMsg}</div>`);
             });
         }
 
