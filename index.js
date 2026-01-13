@@ -186,23 +186,28 @@ app.get('/download/:uid/:filename', requireLogin, async (req, res) => {
 // 4. SEND MAIL
 app.post('/send', requireLogin, upload.array('attachments'), async (req, res) => {
     const transporter = getSmtpTransport(req.session.user, req.session.pass);
+    const { to, subject, message } = req.body;
 
     try {
-        // Gom đống file người dùng upload lên
         const mailAttachments = req.files ? req.files.map(f => ({
-            filename: f.originalname,
-            path: f.path
+            filename: f.originalname, path: f.path
         })) : [];
 
-        await transporter.sendMail({
+        // 1. Gửi mail đi
+        const info = await transporter.sendMail({
             from: `"${req.session.user}" <${req.session.user}>`,
-            to: req.body.to,
-            subject: req.body.subject,
-            html: req.body.message.replace(/\n/g, '<br>'),
-            attachments: mailAttachments // <--- Vả đống file vào đây
+            to, subject,
+            html: message.replace(/\n/g, '<br>'),
+            attachments: mailAttachments
         });
 
-        // Gửi xong thì dọn dẹp file tạm cho server nó sạch (Optional nhưng nên làm)
+        // 2. ĐM THÀNH, PHẢI CHÉP VÀO HÒM SENT Ở ĐÂY!
+        const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
+        const rawMail = info.message.toString(); // Lấy nội dung thô để chép
+        await connection.append(rawMail, { box: 'Sent', flags: ['\\Seen'] });
+        await connection.end();
+
+        // Dọn dẹp file tạm
         const fs = require('fs');
         mailAttachments.forEach(file => fs.unlinkSync(file.path));
 
