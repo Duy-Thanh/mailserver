@@ -189,32 +189,36 @@ app.post('/send', requireLogin, upload.array('attachments'), async (req, res) =>
     const { to, subject, message } = req.body;
 
     try {
+        // ĐM THÀNH, PHẢI DUYỆT HẾT REQ.FILES THẾ NÀY NÀY!
         const mailAttachments = req.files ? req.files.map(f => ({
-            filename: f.originalname, path: f.path
+            filename: f.originalname, // Tên file gốc
+            path: f.path,             // Đường dẫn tạm trên server
+            contentType: f.mimetype   // Kiểu file để Gmail nó đéo chặn
         })) : [];
 
-        // 1. Gửi mail đi
+        // 1. Gửi mail đi với ARRAY attachments
         const info = await transporter.sendMail({
             from: `"${req.session.user}" <${req.session.user}>`,
             to, subject,
             html: message.replace(/\n/g, '<br>'),
-            attachments: mailAttachments
+            attachments: mailAttachments // Thằng nodemailer nó tự hiểu mảng này
         });
 
-        // 2. ĐM THÀNH, PHẢI CHÉP VÀO HÒM SENT Ở ĐÂY!
+        // 2. Chép vào hòm Sent (Giữ nguyên logic cũ nhưng info.message thô)
         const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
-        const rawMail = info.message.toString(); // Lấy nội dung thô để chép
-        await connection.append(rawMail, { box: 'Sent', flags: ['\\Seen'] });
+        await connection.append(info.message.toString(), { box: 'Sent', flags: ['\\Seen'] });
         await connection.end();
 
-        // Dọn dẹp file tạm
+        // 3. DỌN DẸP SẠCH SẼ (Tránh đầy ổ cứng EC2)
         const fs = require('fs');
-        mailAttachments.forEach(file => fs.unlinkSync(file.path));
+        mailAttachments.forEach(file => {
+            if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        });
 
         res.redirect('/?msg=Email sent successfully! 🚀');
     } catch (err) {
-        console.error(err);
-        res.send("Send Error: " + err.message);
+        console.error("Gửi mail lỗi rồi Thành ơi:", err);
+        res.status(500).send("Send Error: " + err.message);
     }
 });
 
