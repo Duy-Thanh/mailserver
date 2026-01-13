@@ -15,6 +15,92 @@
             --md-primary: #0056d6;
             --md-on-surface: #1b1b1f;
             --md-outline: #74777f;
+            --md-body-bg: #fdfbff;
+            --md-card-bg: #ffffff;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --md-surface: #111318;
+                --md-surface-variant: #44474e;
+                --md-primary: #adc6ff;
+                --md-on-surface: #e3e2e6;
+                --md-outline: #8e9099;
+                --md-body-bg: #111318;
+                --md-card-bg: #1b1b1f;
+            }
+
+            body {
+                background-color: var(--md-body-bg) !important;
+                color: var(--md-on-surface) !important;
+            }
+
+            .email-container {
+                background-color: var(--md-card-bg) !important;
+                border-color: var(--md-surface-variant) !important;
+            }
+
+            .email-header {
+                border-bottom-color: var(--md-surface-variant) !important;
+            }
+
+            .email-subject {
+                color: var(--md-on-surface) !important;
+            }
+
+            .email-body {
+                color: var(--md-on-surface) !important;
+            }
+
+            .email-body a {
+                color: var(--md-primary) !important;
+            }
+
+            /* FIX CÁI CARD REPLY CHO NÓ KHỎI TRẮNG ỞN */
+            .reply-container {
+                background-color: #1e2025 !important;
+            }
+
+            .reply-input-wrapper {
+                background: #2b2b2f !important;
+                border-color: var(--md-outline) !important;
+            }
+
+            textarea.m3-textarea {
+                background: transparent !important;
+                color: white !important;
+            }
+
+            /* ATTACHMENT CHIPS DARK */
+            .attachment-chip {
+                background-color: #2b2b2f !important;
+                border-color: var(--md-surface-variant) !important;
+                color: #e3e2e6 !important;
+            }
+
+            .attachment-chip:hover {
+                background-color: #3b3f46 !important;
+            }
+
+            .attachment-chip .text-dark {
+                color: #e3e2e6 !important;
+            }
+
+            .bg-primary-subtle {
+                background-color: rgba(0, 86, 214, 0.2) !important;
+            }
+
+            .text-dark {
+                color: var(--md-on-surface) !important;
+            }
+
+            .btn-m3-icon {
+                color: var(--md-on-surface) !important;
+            }
+
+            .btn-m3-icon:hover {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+            }
         }
 
         body {
