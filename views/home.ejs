@@ -118,6 +118,56 @@
                 background: var(--md-sys-color-surface-container) !important;
                 color: white !important;
             }
+
+            .modal-content {
+                background-color: rgba(27, 29, 34, 0.9) !important;
+                /* Đen mờ xuyên thấu */
+                backdrop-filter: blur(20px);
+                /* Hiệu ứng Glassmorphism */
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5) !important;
+            }
+
+            .modal-header .btn-close {
+                filter: invert(1) grayscale(1) brightness(2);
+            }
+
+            .modal-body input,
+            .modal-body textarea {
+                background-color: rgba(255, 255, 255, 0.05) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                color: #e3e2e6 !important;
+                border-radius: 12px !important;
+            }
+
+            .modal-body input:focus,
+            .modal-body textarea:focus {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                border-color: var(--md-sys-color-primary) !important;
+                box-shadow: 0 0 0 4px rgba(173, 198, 255, 0.2) !important;
+            }
+
+            /* FIX CÁI NÚT CHỌN FILE LỎ */
+            input[type="file"]::file-selector-button {
+                background-color: var(--md-sys-color-primary-container) !important;
+                color: var(--md-sys-color-on-primary-container) !important;
+                border: none !important;
+                border-radius: 8px !important;
+                padding: 8px 16px !important;
+                margin-right: 16px !important;
+                cursor: pointer;
+                transition: 0.2s;
+            }
+
+            input[type="file"]::file-selector-button:hover {
+                filter: brightness(1.2);
+            }
+
+            .modal-footer .btn-light {
+                background-color: transparent !important;
+                color: #e3e2e6 !important;
+                border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            }
         }
 
         html,
