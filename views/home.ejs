@@ -6,156 +6,183 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
-    <title>Javalorant Inbox</title>
+    <title>Javalorant Inbox - Premium</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #0b57d0;
-            --bg-color: #f6f8fc;
+            --primary: #0b57d0;
+            --bg: #f6f8fc;
+            --hover: #f2f2f2;
+            --active-bg: #c2e7ff;
         }
 
         body {
-            background: var(--bg-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
         }
 
+        /* SIDEBAR XỊN */
         .sidebar {
             background: white;
-            border-radius: 16px;
+            border-radius: 20px;
             margin: 15px;
             height: calc(100vh - 30px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: none;
         }
 
         .nav-link {
             color: #444;
             border-radius: 0 25px 25px 0;
             margin-right: 15px;
-            padding: 10px 25px;
-            transition: 0.3s;
+            padding: 12px 25px;
+            transition: all 0.2s;
+            font-weight: 500;
         }
 
         .nav-link:hover {
-            background: #f2f2f2;
+            background: var(--hover);
         }
 
         .nav-link.active {
-            background: #c2e7ff !important;
+            background: var(--active-bg) !important;
             color: #001d35 !important;
             font-weight: bold;
         }
 
+        .nav-link i {
+            width: 25px;
+        }
+
+        /* EMAIL LIST CONTAINER */
+        .content-area {
+            padding: 15px;
+            height: 100vh;
+        }
+
         .email-card {
-            border-radius: 16px;
+            border-radius: 20px;
             border: none;
-            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
             height: calc(100vh - 120px);
+            overflow: hidden;
         }
 
         #email-list {
             height: 100%;
             overflow-y: auto;
+            padding: 10px 0;
         }
 
+        /* EMAIL ITEM */
         .email-item {
             border: none !important;
-            margin: 0 10px;
-            border-radius: 8px !important;
-            margin-bottom: 2px;
+            margin: 0 12px 4px;
+            border-radius: 12px !important;
+            transition: 0.2s;
+            border-bottom: 1px solid #f1f1f1 !important;
         }
 
         .email-item:hover {
-            box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transform: scale(1.005);
+            z-index: 10;
+            background: white !important;
         }
 
         .unseen {
             background: white;
-            border-left: 4px solid var(--primary-color) !important;
+            border-left: 5px solid var(--primary) !important;
+            font-weight: 700;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
         }
 
         .seen {
             background: #f8f9fa;
+            color: #5f6368;
         }
 
+        /* NÚT THÙNG RÁC ẨN */
         .trash-btn {
             opacity: 0;
             transition: 0.2s;
+            color: #ea4335;
         }
 
         .email-item:hover .trash-btn {
             opacity: 1;
         }
+
+        .badge-count {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-light bg-white border-bottom px-4 d-flex justify-content-between">
-        <a class="navbar-brand fw-bold text-primary" href="/"><i class="fas fa-paper-plane"></i> Javalorant Mail</a>
+    <nav class="navbar navbar-light bg-white border-bottom px-4 py-2 shadow-sm sticky-top">
+        <a class="navbar-brand fw-bold text-primary" href="/"><i class="fas fa-paper-plane me-2"></i>Javalorant Mail</a>
         <div class="d-flex align-items-center">
-            <span class="text-muted small me-3">
+            <span class="text-muted small me-3"><i class="fas fa-user-circle me-1"></i>
                 <%= user %>
             </span>
-            <a href="/logout" class="btn btn-outline-danger btn-sm">Logout <i class="fas fa-sign-out-alt"></i></a>
+            <a href="/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</a>
         </div>
     </nav>
 
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2 sidebar p-3">
-                <button class="btn btn-primary w-100 mb-3 rounded-pill py-2" data-bs-toggle="modal"
+                <button class="btn btn-primary w-100 mb-4 rounded-pill py-3 shadow-sm" data-bs-toggle="modal"
                     data-bs-target="#composeModal">
-                    <i class="fas fa-plus"></i> Compose
+                    <i class="fas fa-edit me-2"></i>Compose
                 </button>
-                <ul class="nav flex-column">
+                <ul class="nav flex-column" id="folder-list">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#" onclick="loadEmails('INBOX')"><i class="fas fa-inbox"></i>
-                            Inbox</a>
+                        <a class="nav-link active" href="#" onclick="loadEmails('INBOX')">
+                            <i class="fas fa-inbox"></i> Inbox
+                            <span id="unread-count"
+                                class="badge bg-danger rounded-pill float-end badge-count d-none">0</span>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="loadEmails('Sent')"><i class="fas fa-paper-plane"></i>
-                            Sent</a>
+                        <a class="nav-link" href="#" onclick="loadEmails('Sent')">
+                            <i class="fas fa-paper-plane"></i> Sent
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="loadEmails('Trash')"><i class="fas fa-trash"></i>
-                            Trash</a>
+                        <a class="nav-link" href="#" onclick="loadEmails('Trash')">
+                            <i class="fas fa-trash"></i> Trash
+                        </a>
                     </li>
                 </ul>
             </div>
 
-            <div class="col-md-10 p-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                        <h5 class="mb-0 text-secondary">
-                            <i class="fas fa-envelope"></i> <span id="current-box-title">Inbox</span>
-                            <small id="realtime-status" class="text-success small ms-2" style="font-size: 0.6em;">
-                                <i class="fas fa-circle fa-beat"></i> Real-time Active
+            <div class="col-md-10 content-area">
+                <div class="card email-card">
+                    <div
+                        class="card-header bg-white d-flex justify-content-between align-items-center py-3 border-bottom">
+                        <h5 class="mb-0 text-dark">
+                            <span id="current-box-title" class="fw-bold">Inbox</span>
+                            <small id="realtime-status" class="text-success small ms-3" style="font-size: 0.6em;">
+                                <i class="fas fa-circle fa-beat me-1"></i> Real-time Active
                             </small>
                         </h5>
                         <div>
-                            <button class="btn btn-light btn-sm border me-2" onclick="loadEmails(currentBox)">
-                                <i class="fas fa-sync-alt"></i> Refresh
+                            <button class="btn btn-light btn-sm border rounded-pill px-3 me-2"
+                                onclick="loadEmails(currentBox)">
+                                <i class="fas fa-sync-alt me-1"></i> Refresh
                             </button>
                         </div>
                     </div>
 
                     <div id="email-list" class="list-group list-group-flush">
-                        <% emails.forEach(function(email) { %>
-                            <div class="list-group-item email-item p-3 <%= email.seen ? 'seen' : 'unseen' %>"
-                                onclick="window.location='/read/<%= email.id %>'">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <span class="mb-1 text-truncate" style="max-width: 200px;">
-                                        <%= email.from.replace(/<.*>/, '') %>
-                                    </span>
-                                    <small class="text-muted">
-                                        <%= new Date(email.date).toLocaleDateString('en-US') %>
-                                    </small>
-                                </div>
-                                <p class="mb-1 text-truncate text-dark">
-                                    <%= email.subject || '(No Subject)' %>
-                                </p>
-                            </div>
-                            <% }); %>
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" role="status"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,31 +191,31 @@
 
     <div class="modal fade" id="composeModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>New Message</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header bg-light border-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-pen-nib me-2"></i>New Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="/send" method="POST">
-                    <div class="modal-body">
+                <form action="/send" method="POST" enctype="multipart/form-data">
+                    <div class="modal-body p-4">
+                        <input type="email" name="to" class="form-control mb-3 border-0 border-bottom rounded-0"
+                            placeholder="To" required style="box-shadow: none;">
+                        <input type="text" name="subject" class="form-control mb-3 border-0 border-bottom rounded-0"
+                            placeholder="Subject" required style="box-shadow: none;">
                         <div class="mb-3">
-                            <input type="email" name="to" class="form-control" placeholder="To" required>
+                            <label class="form-label small text-muted"><i class="fas fa-paperclip"></i> Đính kèm
+                                file</label>
+                            <input type="file" name="attachments" class="form-control form-control-sm border-0 bg-light"
+                                multiple>
                         </div>
-                        <div class="mb-3">
-                            <input type="text" name="subject" class="form-control" placeholder="Subject" required>
-                        </div>
-                        <div class="mb-2">
-                            <input type="file" name="attachments" class="form-control form-control-sm" multiple>
-                        </div>
-                        <div class="mb-3">
-                            <textarea name="message" class="form-control" rows="10"
-                                placeholder="Message content..."></textarea>
-                        </div>
+                        <textarea name="message" class="form-control border-0 bg-light rounded-4" rows="12"
+                            placeholder="Write your message here..." style="resize: none;"></textarea>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Send <i
-                                class="fas fa-paper-plane ms-1"></i></button>
+                    <div class="modal-footer border-0 px-4 pb-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-5 shadow">Send <i
+                                class="fas fa-paper-plane ms-2"></i></button>
                     </div>
                 </form>
             </div>
@@ -201,17 +228,9 @@
     <script>
         let currentBox = 'INBOX';
 
-        // Đợi DOM sẵn sàng rồi mới quẩy
         $(document).ready(function () {
-            console.log("Javalorant Mail System Ready!");
-
-            // Load mail lần đầu
             loadEmails('INBOX');
-
-            // Tự động quét mỗi 30 giây
-            setInterval(() => {
-                loadEmails(currentBox);
-            }, 30000);
+            setInterval(() => loadEmails(currentBox), 30000);
         });
 
         function loadEmails(boxName) {
@@ -225,35 +244,47 @@
 
             $.get(url, function (data) {
                 let html = '';
+
+                // Cập nhật đếm số mail chưa đọc nếu là Inbox
+                if (boxName === 'INBOX') {
+                    let unseenCount = data.filter(m => !m.seen).length;
+                    if (unseenCount > 0) {
+                        $('#unread-count').text(unseenCount).removeClass('d-none');
+                    } else {
+                        $('#unread-count').addClass('d-none');
+                    }
+                }
+
                 if (!data || data.length === 0) {
-                    html = '<div class="p-4 text-center text-muted">Trống trơn như ví của mày vậy!</div>';
+                    html = '<div class="p-5 text-center text-muted"><i class="fas fa-ghost fa-3x mb-3"></i><br>Hòm thư trống rỗng như ví của mày vậy!</div>';
                 } else {
                     data.forEach(mail => {
-                        let contact = (boxName === 'Sent') ? `To: ${mail.to}` : mail.from;
+                        let contact = (boxName === 'Sent') ? `To: ${mail.to}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
                         html += `
-                    <div class="list-group-item email-item p-3 ${mail.seen ? 'seen' : 'unseen'} d-flex justify-content-between align-items-center">
-                        <div onclick="window.location='/read/${mail.id}'" class="flex-grow-1">
-                            <div class="d-flex w-100 justify-content-between">
-                                <span class="mb-1 text-truncate" style="max-width: 250px;">${contact}</span>
-                                <small class="text-muted">${new Date(mail.date).toLocaleTimeString()}</small>
+                        <div class="list-group-item email-item p-3 ${mail.seen ? 'seen' : 'unseen'} d-flex justify-content-between align-items-center">
+                            <div onclick="window.location='/read/${mail.id}'" class="flex-grow-1 overflow-hidden" style="cursor: pointer;">
+                                <div class="d-flex w-100 justify-content-between mb-1">
+                                    <span class="text-truncate fw-bold" style="max-width: 250px;">${contact}</span>
+                                    <small class="text-muted">${new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+                                </div>
+                                <div class="text-truncate text-dark" style="font-size: 0.9rem;">${mail.subject || '(No Subject)'}</div>
                             </div>
-                            <p class="mb-1 text-truncate text-dark">${mail.subject || '(No Subject)'}</p>
-                        </div>
-                        <button class="btn btn-link text-danger p-0 ms-3" onclick="trashEmail(${mail.id}, event)">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>`;
+                            <button class="btn btn-link trash-btn p-2" onclick="trashEmail(${mail.id}, event)" title="Move to Trash">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>`;
                     });
                 }
                 $('#email-list').html(html);
+                console.log(`[${new Date().toLocaleTimeString()}] Real-time: Updated ${boxName}`);
             }).fail(function () {
-                console.error("Lỗi đéo load được mail rồi!");
+                $('#email-list').html('<div class="alert alert-danger m-3">Server ngỏm rồi mày ơi, check PM2 đi!</div>');
             });
         }
 
         function trashEmail(uid, event) {
             event.stopPropagation();
-            if (!confirm('Mày chắc chắn muốn vứt cái này vào sọt rác chứ?')) return;
+            if (!confirm('Tống con mail này vào sọt rác nhé?')) return;
             $.post('/api/emails/move-to-trash', { uid: uid }, function (res) {
                 loadEmails(currentBox);
             });
