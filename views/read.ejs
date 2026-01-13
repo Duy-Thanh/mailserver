@@ -262,20 +262,20 @@
             });
         }
 
-        // ĐOẠN NÀY ĐỂ HIỆN MULTI-FILE ĐÂY, NHÌN CHO KỸ!
+        // ĐOẠN NÀY ĐỂ HIỆN MULTI-FILE
         $('#quick-attach-input').on('change', function () {
             const files = this.files;
             const $list = $('#selected-files-list');
-            $list.empty(); // Xóa sạch cái cũ để nạp lại cả mảng mới
+            $list.empty();
 
             if (files && files.length > 0) {
-                // Duyệt qua từng file một trong danh sách mày vừa chọn
+                console.log("Mày vừa chọn " + files.length + " file!");
                 Array.from(files).forEach((f) => {
                     $list.append(`
-                        <div class="badge bg-secondary-subtle text-dark border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-2 me-2" style="transition: 0.2s;">
-                            <i class="fas fa-file-alt text-primary"></i> 
+                        <div class="badge bg-primary-subtle text-primary border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm mb-2 me-2">
+                            <i class="fas fa-file-alt"></i> 
                             <span class="text-truncate" style="max-width: 150px;">${f.name}</span>
-                            <i class="fas fa-times-circle text-danger ms-1" style="cursor:pointer" onclick="clearAllFiles()" title="Xóa hết chọn lại"></i>
+                            <i class="fas fa-check-circle text-success"></i>
                         </div>
                     `);
                 });

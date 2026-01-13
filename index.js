@@ -7,6 +7,7 @@ const imaps = require('imap-simple');
 const simpleParser = require('mailparser').simpleParser;
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const fs = require('fs');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -188,43 +189,38 @@ app.post('/send', requireLogin, upload.array('attachments'), async (req, res) =>
     const transporter = getSmtpTransport(req.session.user, req.session.pass);
     const { to, subject, message } = req.body;
 
+    // LOG ĐỂ KIỂM TRA - NHÌN VÀO TERMINAL NHÉ THÀNH!
+    console.log(`ĐANG GỬI MAIL ĐẾN: ${to}`);
+    console.log(`SỐ LƯỢNG FILE NHẬN ĐƯỢC: ${req.files ? req.files.length : 0}`);
+
     try {
-        // 1. DUYỆT HẾT FILE - Gửi 1 hay 10 file cũng nhận hết!
         const mailAttachments = req.files ? req.files.map(f => ({
             filename: f.originalname,
             path: f.path
         })) : [];
 
-        const mailOptions = {
+        await transporter.sendMail({
             from: `"${req.session.user}" <${req.session.user}>`,
             to,
             subject,
             html: message.replace(/\n/g, '<br>'),
-            attachments: mailAttachments
-        };
+            attachments: mailAttachments // VẢ CẢ MẢNG VÀO ĐÂY
+        });
 
-        // 2. GỬI MAIL ĐI
-        await transporter.sendMail(mailOptions);
-
-        // 3. CHÉP VÀO HÒM SENT
+        // LƯU HÒM SENT
         const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
-
-        // ĐM THÀNH, PHẢI CÓ DÒNG NÀY NÓ MỚI HẾT CHỬI "No mailbox specified"
         await connection.openBox('Sent');
-
-        // Tạo nội dung thô đơn giản để lưu
         let rawContent = `To: ${to}\r\nSubject: ${subject}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n${message}`;
         if (mailAttachments.length > 0) {
-            rawContent += `<br><br>--- Attachments: ${mailAttachments.map(a => a.filename).join(', ')} ---`;
+            rawContent += `\r\n\r\n--- Attachments: ${mailAttachments.map(a => a.filename).join(', ')} ---`;
         }
-
-        // Bây giờ mới append vào được này
         await connection.append(rawContent, { box: 'Sent', flags: ['\\Seen'] });
         await connection.end();
 
-        // 4. DỌN RÁC TRÊN EC2
-        const fs = require('fs');
-        mailAttachments.forEach(file => fs.unlinkSync(file.path));
+        // DỌN RÁC
+        mailAttachments.forEach(file => {
+            if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        });
 
         res.redirect('/?msg=Gửi thành công cmnr Thành ơi! 🚀');
     } catch (err) {
