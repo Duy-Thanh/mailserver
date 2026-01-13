@@ -24,77 +24,99 @@
 
         @media (prefers-color-scheme: dark) {
             :root {
-                /* Bảng màu Material 3 Dark chuẩn Google */
                 --md-sys-color-primary: #adc6ff;
                 --md-sys-color-on-primary: #002e69;
                 --md-sys-color-primary-container: #004494;
                 --md-sys-color-on-primary-container: #d8e2ff;
                 --md-sys-color-surface: #1b1b1f;
+                /* Nền chính tối */
                 --md-sys-color-surface-container: #2b2b2f;
+                /* Nền sidebar/search tối */
                 --md-sys-color-on-surface: #e3e2e6;
+                /* Màu chữ sáng */
                 --md-sys-color-outline-variant: #44474e;
                 --md-sys-color-secondary-container: #44474e;
-                --item-hover: rgba(255, 255, 255, 0.08);
             }
 
-            /* Vá lỗi hiển thị text trên nền tối */
-            body {
-                background: #1b1b1f !important;
-                color: #e3e2e6 !important;
+            /* FIX TIÊU ĐỀ JAVALORANT & NAVBAR */
+            .navbar {
+                background: var(--md-sys-color-surface) !important;
+                border-bottom: 1px solid var(--md-sys-color-outline-variant) !important;
             }
 
-            .content-area {
-                background-color: #232326 !important;
-                border-color: #44474e !important;
-            }
-
-            .email-item {
-                border-bottom-color: #33353a !important;
-            }
-
-            .email-item:hover {
-                background-color: #2f3036 !important;
-            }
-
-            .unseen {
-                background-color: #252a35 !important;
-            }
-
-            .email-snippet {
-                color: #c4c6d0 !important;
+            .navbar-brand {
+                color: var(--md-sys-color-primary) !important;
+                /* Cho tiêu đề sáng lên màu xanh đặc trưng */
             }
 
             .text-muted {
                 color: #909094 !important;
             }
 
-            .modal-content {
-                background-color: #1b1b1f !important;
-                color: #e3e2e6 !important;
-            }
-
-            .form-control {
-                background-color: #2b2b2f !important;
-                color: #e3e2e6 !important;
-                border: 1px solid #44474e !important;
-            }
-
-            .form-control:focus {
-                background-color: #2b2b2f !important;
-                color: white !important;
-            }
-
-            .search-bar {
-                background: #2b2b2f !important;
-                color: white !important;
+            /* FIX TABS (SIDEBAR LINKS) */
+            .sidebar-container {
+                background: var(--md-sys-color-surface);
             }
 
             .nav-link {
                 color: #c4c6d0 !important;
+                /* Chữ Tab chưa chọn màu xám nhạt */
+            }
+
+            .nav-link:hover {
+                background-color: rgba(255, 255, 255, 0.08) !important;
             }
 
             .nav-link.active {
                 background-color: var(--md-sys-color-primary-container) !important;
+                color: var(--md-sys-color-on-primary-container) !important;
+            }
+
+            /* FIX NỘI DUNG HÒM THƯ */
+            .content-area {
+                background-color: #232326 !important;
+                border-color: var(--md-sys-color-outline-variant) !important;
+            }
+
+            .card-header {
+                border-bottom-color: var(--md-sys-color-outline-variant) !important;
+            }
+
+            #current-box-title {
+                color: var(--md-sys-color-on-surface);
+            }
+
+            /* FIX NÚT REFRESH - KHÔNG CHO ĐEN XÌ LÌ NỮA */
+            .btn-light,
+            .btn-refresh,
+            .card-header button {
+                background-color: var(--md-sys-color-surface-container) !important;
+                color: var(--md-sys-color-primary) !important;
+                border: 1px solid var(--md-sys-color-outline-variant) !important;
+            }
+
+            .btn-light:hover {
+                background-color: var(--md-sys-color-secondary-container) !important;
+            }
+
+            /* FIX EMAIL ITEM */
+            .email-item {
+                border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+                color: var(--md-sys-color-on-surface);
+            }
+
+            .email-snippet {
+                color: #c4c6d0 !important;
+            }
+
+            .unseen {
+                background-color: rgba(0, 86, 214, 0.15) !important;
+                /* Nền mail chưa đọc xanh đậm chất Dark Mode */
+            }
+
+            /* FIX SEARCH BAR TRONG DARK MODE */
+            .search-bar {
+                background: var(--md-sys-color-surface-container) !important;
                 color: white !important;
             }
         }
