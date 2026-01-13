@@ -24,24 +24,21 @@
 
         @media (prefers-color-scheme: dark) {
             :root {
-                /* Bảng màu Material 3 Dark "Bú" nhất */
-                --md-sys-color-primary: #D0BCFF;
-                /* Màu tím sáng đặc trưng */
-                --md-sys-color-on-primary: #381E72;
-                --md-sys-color-primary-container: #4F378B;
-                --md-sys-color-on-primary-container: #EADDFF;
-                --md-sys-color-surface: #1C1B1F;
-                /* Nền chính */
-                --md-sys-color-surface-container: #2B2930;
-                /* Lớp nền thứ 2 */
-                --md-sys-color-on-surface: #E6E1E5;
-                /* Màu chữ chính */
-                --md-sys-color-outline-variant: #49454F;
-                --md-sys-color-secondary-container: #332D41;
-                /* Nền tab khi active */
+                --md-sys-color-primary: #adc6ff;
+                --md-sys-color-on-primary: #002e69;
+                --md-sys-color-primary-container: #004494;
+                --md-sys-color-on-primary-container: #d8e2ff;
+                --md-sys-color-surface: #1b1b1f;
+                /* Nền chính tối */
+                --md-sys-color-surface-container: #2b2b2f;
+                /* Nền sidebar/search tối */
+                --md-sys-color-on-surface: #e3e2e6;
+                /* Màu chữ sáng */
+                --md-sys-color-outline-variant: #44474e;
+                --md-sys-color-secondary-container: #44474e;
             }
 
-            /* TIÊU ĐỀ JAVALORANT & NAVBAR PHẢI SÁNG */
+            /* FIX TIÊU ĐỀ JAVALORANT & NAVBAR */
             .navbar {
                 background: var(--md-sys-color-surface) !important;
                 border-bottom: 1px solid var(--md-sys-color-outline-variant) !important;
@@ -49,67 +46,78 @@
 
             .navbar-brand {
                 color: var(--md-sys-color-primary) !important;
-                /* Chữ Javalorant màu tím sáng rực */
-                font-weight: 700;
-                letter-spacing: 0.5px;
+                /* Cho tiêu đề sáng lên màu xanh đặc trưng */
             }
 
-            /* FIX CÁI THANH TAB SIDEBAR (ẢNH 12f46a) */
+            .text-muted {
+                color: #909094 !important;
+            }
+
+            /* FIX TABS (SIDEBAR LINKS) */
+            .sidebar-container {
+                background: var(--md-sys-color-surface);
+            }
+
             .nav-link {
-                color: #CAC4D0 !important;
-                /* Chữ xám trắng sang chảnh */
-                margin: 4px 12px;
+                color: #c4c6d0 !important;
+                /* Chữ Tab chưa chọn màu xám nhạt */
             }
 
-            .nav-link i {
-                color: var(--md-sys-color-primary);
-                /* Icon luôn sáng màu */
-            }
-
-            .nav-link.active {
-                background-color: var(--md-sys-color-secondary-container) !important;
-                /* Nền tab active sáng hơn nền sidebar */
-                color: var(--md-sys-color-primary) !important;
-                /* Chữ tab active màu tím sáng */
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            }
-
-            .nav-link:hover:not(.active) {
+            .nav-link:hover {
                 background-color: rgba(255, 255, 255, 0.08) !important;
             }
 
-            /* NÚT REFRESH & CARD HEADER */
+            .nav-link.active {
+                background-color: var(--md-sys-color-primary-container) !important;
+                color: var(--md-sys-color-on-primary-container) !important;
+            }
+
+            /* FIX NỘI DUNG HÒM THƯ */
+            .content-area {
+                background-color: #232326 !important;
+                border-color: var(--md-sys-color-outline-variant) !important;
+            }
+
             .card-header {
-                background-color: #252429 !important;
-                border-bottom: 1px solid var(--md-sys-color-outline-variant) !important;
+                border-bottom-color: var(--md-sys-color-outline-variant) !important;
             }
 
             #current-box-title {
-                color: var(--md-sys-color-primary) !important;
-                /* Chữ INBOX/SENT sáng lên */
-                text-transform: uppercase;
-                letter-spacing: 1px;
+                color: var(--md-sys-color-on-surface);
             }
 
+            /* FIX NÚT REFRESH - KHÔNG CHO ĐEN XÌ LÌ NỮA */
             .btn-light,
-            button[onclick*="loadEmails"] {
-                background-color: var(--md-sys-color-primary-container) !important;
-                /* Nút refresh xanh tím */
-                color: var(--md-sys-color-on-primary-container) !important;
-                border: none !important;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            .btn-refresh,
+            .card-header button {
+                background-color: var(--md-sys-color-surface-container) !important;
+                color: var(--md-sys-color-primary) !important;
+                border: 1px solid var(--md-sys-color-outline-variant) !important;
             }
 
             .btn-light:hover {
-                background-color: var(--md-sys-color-primary) !important;
-                color: var(--md-sys-color-on-primary) !important;
+                background-color: var(--md-sys-color-secondary-container) !important;
             }
 
-            /* SEARCH BAR DARK MODE */
+            /* FIX EMAIL ITEM */
+            .email-item {
+                border-bottom-color: rgba(255, 255, 255, 0.05) !important;
+                color: var(--md-sys-color-on-surface);
+            }
+
+            .email-snippet {
+                color: #c4c6d0 !important;
+            }
+
+            .unseen {
+                background-color: rgba(0, 86, 214, 0.15) !important;
+                /* Nền mail chưa đọc xanh đậm chất Dark Mode */
+            }
+
+            /* FIX SEARCH BAR TRONG DARK MODE */
             .search-bar {
                 background: var(--md-sys-color-surface-container) !important;
                 color: white !important;
-                border: 1px solid var(--md-sys-color-outline-variant) !important;
             }
         }
 
