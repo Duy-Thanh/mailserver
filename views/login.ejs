@@ -16,6 +16,44 @@
             --md-primary-container: #d8e2ff;
             --md-on-primary-container: #001a41;
             --md-outline: #74777f;
+            --text-title: #1b1b1f;
+            --text-body: #44474e;
+        }
+
+        /* ĐM THÀNH, ĐÂY LÀ PHẦN BIẾN HÌNH DARK MODE CHO LOGIN ĐÂY */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --md-surface: #111318;
+                --md-surface-container: #1e2025;
+                --md-primary: #adc6ff;
+                --md-on-primary: #002e69;
+                --md-primary-container: #004494;
+                --md-on-primary-container: #d8e2ff;
+                --md-outline: #8e9099;
+                --text-title: #e3e2e6;
+                --text-body: #c4c6d0;
+            }
+
+            .form-control {
+                background-color: #2b2b2f !important;
+                color: white !important;
+                border-color: var(--md-outline) !important;
+            }
+
+            .form-control::placeholder {
+                color: #8e9099 !important;
+            }
+
+            .login-card {
+                border-color: #33353a !important;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+            }
+
+            .alert-m3 {
+                background-color: #8c1d18 !important;
+                /* Màu đỏ sậm M3 Dark */
+                color: #f9dedc !important;
+            }
         }
 
         body {
@@ -26,18 +64,18 @@
             height: 100vh;
             margin: 0;
             font-family: 'Google Sans', 'Segoe UI', system-ui, sans-serif;
+            transition: background-color 0.3s;
         }
 
-        /* CARD ĐĂNG NHẬP KIỂU M3 */
         .login-card {
             width: 100%;
             max-width: 440px;
             padding: 48px 40px;
             border-radius: 28px;
-            /* Bo góc cực đại */
             background-color: var(--md-surface-container);
             border: 1px solid rgba(0, 0, 0, 0.05);
             text-align: center;
+            transition: all 0.3s;
         }
 
         .brand-icon {
@@ -56,17 +94,16 @@
         .login-title {
             font-size: 28px;
             font-weight: 500;
-            color: #1b1b1f;
+            color: var(--text-title);
             margin-bottom: 8px;
         }
 
         .login-subtitle {
             font-size: 16px;
-            color: #44474e;
+            color: var(--text-body);
             margin-bottom: 32px;
         }
 
-        /* TEXT FIELD KIỂU MATERIAL */
         .form-label {
             font-size: 14px;
             font-weight: 500;
@@ -90,27 +127,25 @@
             border-color: var(--md-primary);
             border-width: 2px;
             box-shadow: none;
-            background-color: white;
         }
 
-        /* NÚT BẤM PILL-SHAPED */
         .btn-login {
             background-color: var(--md-primary);
             color: var(--md-on-primary);
             border: none;
             border-radius: 100px;
-            /* Nút tròn vo kiểu M3 */
             padding: 14px;
             font-weight: 500;
             font-size: 16px;
             margin-top: 16px;
-            transition: box-shadow 0.2s;
+            transition: all 0.2s;
         }
 
         .btn-login:hover {
-            background-color: #004bb9;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            color: white;
+            background-color: var(--md-primary);
+            filter: brightness(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            color: var(--md-on-primary);
         }
 
         .alert-m3 {
@@ -125,6 +160,7 @@
             align-items: center;
             gap: 12px;
         }
+    </style>
     </style>
 </head>
 
