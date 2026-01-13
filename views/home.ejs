@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* ĐỐM BIẾN MATERIAL YOU - TỰ ĐỘNG THEO HỆ THỐNG HOẶC CLASS .dark-mode */
         :root {
             --md-sys-color-primary: #0056d6;
             --md-sys-color-on-primary: #ffffff;
@@ -20,6 +21,19 @@
             --md-sys-color-on-surface: #1b1b1f;
             --md-sys-color-outline-variant: #c4c6d0;
             --md-sys-color-secondary-container: #e1e2ec;
+            --list-item-bg: white;
+        }
+
+        body.dark-mode {
+            --md-sys-color-surface: #111318;
+            --md-sys-color-surface-container: #1e2025;
+            --md-sys-color-on-surface: #e2e2e6;
+            --md-sys-color-primary: #adc6ff;
+            --md-sys-color-primary-container: #004494;
+            --md-sys-color-on-primary-container: #d8e2ff;
+            --md-sys-color-outline-variant: #44474e;
+            --md-sys-color-secondary-container: #33353a;
+            --list-item-bg: #1a1c1e;
         }
 
         html,
@@ -29,6 +43,7 @@
             padding: 0;
             overflow: hidden;
             background: var(--md-sys-color-surface);
+            transition: background 0.3s ease;
         }
 
         body {
@@ -38,12 +53,15 @@
             color: var(--md-sys-color-on-surface);
         }
 
-        /* NAVBAR M3 VỚI SEARCH BAR */
         .navbar {
             height: 72px;
             background: var(--md-sys-color-surface) !important;
             padding: 0 24px;
             gap: 24px;
+        }
+
+        .navbar-brand {
+            color: var(--md-sys-color-on-surface) !important;
         }
 
         .search-container {
@@ -60,19 +78,21 @@
             width: 100%;
             height: 48px;
             transition: 0.2s;
+            color: var(--md-sys-color-on-surface);
         }
 
         .search-bar:focus {
             outline: none;
-            background: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            background: var(--list-item-bg);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .search-icon {
             position: absolute;
             left: 20px;
             top: 14px;
-            color: #44474e;
+            color: var(--md-sys-color-on-surface);
+            opacity: 0.7;
         }
 
         .main-wrapper {
@@ -82,7 +102,6 @@
             padding: 0 12px 12px 12px;
         }
 
-        /* SIDEBAR NÂNG CẤP */
         .sidebar-container {
             width: 280px;
             flex-shrink: 0;
@@ -106,13 +125,8 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-compose:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transform: translateY(-1px);
-        }
-
         .nav-link {
-            color: #44474e;
+            color: var(--md-sys-color-on-surface);
             border-radius: 28px;
             padding: 12px 24px;
             margin-bottom: 4px;
@@ -126,50 +140,37 @@
 
         .nav-link.active {
             background-color: var(--md-sys-color-secondary-container) !important;
-            color: #1b1b1f !important;
+            color: var(--md-sys-color-on-surface) !important;
         }
 
-        .nav-link:hover:not(.active) {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        /* CONTENT AREA - CARD NỔI BẬT */
         .content-area {
             flex: 1;
-            background-color: white;
+            background-color: var(--list-item-bg);
             border-radius: 32px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--md-sys-color-outline-variant);
         }
 
-        #email-list {
-            flex: 1;
-            overflow-y: auto;
-            scrollbar-width: thin;
-        }
-
-        /* EMAIL ITEM STYLE */
         .email-item {
             display: flex;
             align-items: center;
             padding: 12px 24px;
             cursor: pointer;
-            border-bottom: 1px solid #f1f1f1;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
             transition: 0.1s;
             position: relative;
             gap: 16px;
+            background-color: var(--list-item-bg);
         }
 
         .email-item:hover {
             background-color: var(--md-sys-color-surface-container) !important;
-            box-shadow: inset 0 0 0 1px var(--md-sys-color-outline-variant);
         }
 
         .unseen {
-            background-color: #f0f4ff !important;
+            background-color: var(--md-sys-color-secondary-container) !important;
         }
 
         .unseen::after {
@@ -186,158 +187,79 @@
             width: 40px;
             height: 40px;
             border-radius: 20px;
-            background: var(--md-sys-color-primary);
-            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             flex-shrink: 0;
-        }
-
-        .email-title {
-            font-size: 15px;
-            color: var(--md-sys-color-on-surface);
-        }
-
-        .email-snippet {
-            font-size: 14px;
-            color: #44474e;
+            color: white;
         }
 
         .email-date {
             font-size: 12px;
             font-weight: 500;
-            white-space: nowrap;
+            color: var(--md-sys-color-on-surface);
+            opacity: 0.8;
         }
 
-        /* SNACKBAR / TOAST M3 */
-        .m3-toast-container {
-            position: fixed;
-            bottom: 24px;
-            left: 24px;
-            z-index: 2000;
+        .email-snippet {
+            color: var(--md-sys-color-on-surface);
+            opacity: 0.7;
         }
 
         .m3-snackbar {
-            background: #313033;
-            color: #f4eff4;
+            background: var(--md-sys-color-on-surface);
+            color: var(--md-sys-color-surface);
             padding: 14px 24px;
             border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
-            min-width: 320px;
-            animation: slideUp 0.3s ease-out;
         }
 
-        @keyframes slideUp {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        avatar-circle {
-            transition: transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .email-item {
-            border-radius: 12px;
-            /* Bo góc nhẹ cho từng item trong list */
-            margin: 4px 8px;
-            border: none !important;
-        }
-
-        .email-item:hover {
-            transform: scale(1.005);
-            z-index: 10;
-            background-color: var(--md-sys-color-primary-container) !important;
-        }
-
-        /* Animation cho mail mới nổ ra */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .email-item {
-            animation: slideIn 0.3s ease-out;
-        }
-
-        /* Thanh search "thông minh" */
-        .search-bar:focus {
-            max-width: 800px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .card-header {
-            background: transparent !important;
-            padding: 20px 24px;
-            /* Tăng padding cho thoáng */
-            border-bottom: 1px solid var(--md-sys-color-outline-variant) !important;
-            display: flex;
-            align-items: center;
-            min-height: 72px;
-            /* Khóa chiều cao để không bị lệch */
-        }
-
-        #current-box-title {
-            margin: 0;
-            font-size: 22px;
-            font-weight: 500;
-            color: var(--md-sys-color-on-surface);
-            /* Đảm bảo chữ không bị đè */
-            padding-left: 8px;
-        }
-
-        .avatar-circle {
+        /* DARK MODE TOGGLE */
+        .theme-toggle {
             width: 40px;
             height: 40px;
             border-radius: 20px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-            transition: transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: none;
+            background: transparent;
+            color: var(--md-sys-color-on-surface);
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .email-item:hover .avatar-circle {
-            transform: scale(1.1);
+        .theme-toggle:hover {
+            background: rgba(128, 128, 128, 0.2);
+        }
+
+        .modal-content {
+            background-color: var(--md-sys-color-surface) !important;
+            color: var(--md-sys-color-on-surface);
+            border: 1px solid var(--md-sys-color-outline-variant) !important;
+        }
+
+        .form-control {
+            background-color: var(--md-sys-color-surface-container) !important;
+            color: var(--md-sys-color-on-surface) !important;
+            border: 1px solid var(--md-sys-color-outline-variant) !important;
         }
     </style>
 </head>
 
-<body>
+<body class="dark-mode">
     <nav class="navbar navbar-light">
         <div class="d-flex align-items-center">
             <i class="fas fa-bars me-4 text-muted fs-5" style="cursor: pointer;"></i>
-            <a class="navbar-brand m-0" href="/">Javalorant</a>
+            <a class="navbar-brand m-0 fw-bold" href="/">Javalorant</a>
         </div>
 
         <div class="search-container">
             <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-bar" placeholder="Search in mail (Thành đẹp trai...)">
+            <input type="text" class="search-bar" placeholder="Search in mail (Thành HFT đẹp trai...)">
         </div>
 
         <div class="ms-auto d-flex align-items-center">
+            <button class="theme-toggle me-3" onclick="toggleTheme()" title="Đổi màu">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
             <span class="text-muted small me-4 d-none d-md-block">
                 <%= user %>
             </span>
@@ -351,7 +273,6 @@
                 <i class="fas fa-pencil fa-lg"></i>
                 <span>Compose</span>
             </button>
-
             <div class="nav-folders">
                 <a class="nav-link active" onclick="loadEmails('INBOX')">
                     <i class="fas fa-inbox"></i>
@@ -372,15 +293,14 @@
         <div class="content-area shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold" id="current-box-title">Inbox</h5>
-                <button class="btn btn-light btn-sm rounded-pill px-3 border-0 bg-transparent hover-bg"
+                <button class="btn btn-light btn-sm rounded-pill px-3 border-0 bg-transparent"
                     onclick="loadEmails(currentBox)">
-                    <i class="fas fa-sync-alt"></i>
+                    <i class="fas fa-sync-alt text-muted"></i>
                 </button>
             </div>
-
             <div id="email-list">
                 <div class="text-center p-5">
-                    <div class="spinner-border text-primary" role="status"></div>
+                    <div class="spinner-border text-primary"></div>
                 </div>
             </div>
         </div>
@@ -388,26 +308,25 @@
 
     <div class="modal fade" id="composeModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content border-0 shadow-lg"
-                style="border-radius: 28px; background-color: var(--md-sys-color-surface);">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 28px;">
                 <div class="modal-header border-0 px-4 pt-4">
                     <h5 class="modal-title fw-bold" style="font-size: 24px;"><i class="fas fa-pencil me-2"></i>New
                         Message</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="/send" method="POST" enctype="multipart/form-data">
                     <div class="modal-body p-4">
-                        <input type="email" name="to" class="form-control border-0 bg-light rounded-4 p-3 mb-3"
-                            placeholder="To" required>
-                        <input type="text" name="subject" class="form-control border-0 bg-light rounded-4 p-3 mb-3"
+                        <input type="email" name="to" class="form-control border-0 rounded-4 p-3 mb-3" placeholder="To"
+                            required>
+                        <input type="text" name="subject" class="form-control border-0 rounded-4 p-3 mb-3"
                             placeholder="Subject" required>
                         <div class="mb-3 px-2">
                             <label class="form-label small text-muted"><i class="fas fa-paperclip me-1"></i>
                                 Attachments</label>
-                            <input type="file" name="attachments" class="form-control border-0 bg-light rounded-4"
-                                multiple>
+                            <input type="file" name="attachments" class="form-control border-0" multiple
+                                style="color: gray">
                         </div>
-                        <textarea name="message" class="form-control border-0 bg-light rounded-4 p-3" rows="12"
+                        <textarea name="message" class="form-control border-0 rounded-4 p-3" rows="12"
                             placeholder="Write your message here..." style="resize: none;"></textarea>
                     </div>
                     <div class="modal-footer border-0 px-4 pb-4">
@@ -419,22 +338,28 @@
             </div>
         </div>
     </div>
-
     <div class="m3-toast-container" id="snackbar-container"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // COPY ĐÈ LÊN TOÀN BỘ ĐOẠN SCRIPT CŨ CỦA MÀY
-        let currentBox = 'INBOX';
-        let allEmails = []; // Biến tạm để chứa mail phục vụ Search
 
-        // HÀM TẠO MÀU NGẪU NHIÊN THEO TÊN (CHO NÓ KHÉT)
+    <script>
+        // --- GIỮ NGUYÊN TOÀN BỘ LOGIC CŨ CỦA MÀY ---
+        let currentBox = 'INBOX';
+        let allEmails = [];
+
         function getAvatarColor(str) {
-            const colors = ['#0056d6', '#7d5260', '#6750a4', '#386a20', '#bc004b', '#006a6a', '#44474e'];
+            const colors = ['#0056d6', '#7d5260', '#6750a4', '#386a20', '#bc004b', '#006a6a', '#44474e', '#8b5000'];
             let hash = 0;
             for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
             return colors[Math.abs(hash) % colors.length];
+        }
+
+        function toggleTheme() {
+            $('body').toggleClass('dark-mode');
+            const isDark = $('body').hasClass('dark-mode');
+            $('#theme-icon').attr('class', isDark ? 'fas fa-sun' : 'fas fa-moon');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
         function showSnackbar(msg) {
@@ -444,13 +369,15 @@
         }
 
         $(document).ready(function () {
+            // Restore theme
+            if (localStorage.getItem('theme') === 'light') toggleTheme();
+
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('msg')) showSnackbar(urlParams.get('msg'));
 
             loadEmails('INBOX');
-            setInterval(() => loadEmails(currentBox), 45000); // Tăng lên 45s cho đỡ tốn tài nguyên server
+            setInterval(() => loadEmails(currentBox), 45000);
 
-            // SEARCH KHÔNG CẦN LOAD LẠI TRANG
             $('.search-bar').on('input', function () {
                 const keyword = $(this).val().toLowerCase();
                 const filtered = allEmails.filter(m =>
@@ -461,27 +388,22 @@
             });
         });
 
+        // HÀM loadEmails và renderEmailList MÀY GIỮ NGUYÊN KHÔNG ĐỔI TÍ LOGIC NÀO
         function loadEmails(boxName) {
             currentBox = boxName;
-            // Hiển thị Title chuẩn chỉ
             $('#current-box-title').text(boxName.toUpperCase());
-
             $('.nav-link').removeClass('active');
             $('.nav-link').each(function () {
                 if ($(this).text().trim().toLowerCase().includes(boxName.toLowerCase())) $(this).addClass('active');
             });
-
             $.get(`/api/emails?box=${boxName}&_=${Date.now()}`, function (data) {
                 allEmails = data;
                 renderEmailList(data);
-
                 if (boxName.toUpperCase() === 'INBOX') {
                     const unread = data.filter(m => !m.seen).length;
                     unread > 0 ? $('#unread-count').text(unread).removeClass('d-none') : $('#unread-count').addClass('d-none');
                 }
-            }).fail(function () {
-                showSnackbar("Server ngỏm rồi Thành ơi!");
-            });
+            }).fail(function () { showSnackbar("Server ngỏm rồi Thành ơi!"); });
         }
 
         function renderEmailList(data) {
@@ -490,25 +412,23 @@
                 $list.html(`<div class="p-5 text-center text-muted">Hòm thư ${currentBox} trống rỗng</div>`);
                 return;
             }
-
             data.forEach(mail => {
                 let contact = (currentBox.toUpperCase() === 'SENT') ? `To: ${mail.to}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
                 let initial = contact.replace('To: ', '').trim().charAt(0).toUpperCase() || '?';
                 let time = new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 let avatarColor = getAvatarColor(contact);
-
                 $list.append(`
-                <div class="email-item ${mail.seen ? '' : 'unseen'}" onclick="window.location='/read/${mail.id}'">
-                    <div class="avatar-circle" style="background-color: ${avatarColor}">${initial}</div>
-                    <div class="flex-grow-1 overflow-hidden">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="email-title ${mail.seen ? '' : 'fw-bold'}">${contact}</span>
-                            <span class="email-date ${mail.seen ? 'text-muted' : 'text-primary fw-bold'}">${time}</span>
+                    <div class="email-item ${mail.seen ? '' : 'unseen'}" onclick="window.location='/read/${mail.id}'">
+                        <div class="avatar-circle" style="background-color: ${avatarColor}">${initial}</div>
+                        <div class="flex-grow-1 overflow-hidden">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="email-title ${mail.seen ? '' : 'fw-bold'}">${contact}</span>
+                                <span class="email-date">${time}</span>
+                            </div>
+                            <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
                         </div>
-                        <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
                     </div>
-                </div>
-            `);
+                `);
             });
         }
     </script>
