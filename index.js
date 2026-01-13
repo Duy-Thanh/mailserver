@@ -146,7 +146,10 @@ app.get('/read/:uid', requireLogin, async (req, res) => {
             })) : [];
 
             connection.end();
-            res.render('read', { mail: parsed, uid: id, attachments });
+            res.render('read', {
+                mail: parsed, uid: id, attachments,
+                user: req.session.user
+            });
         } else {
             connection.end();
             res.redirect('/?msg=Email not found');
