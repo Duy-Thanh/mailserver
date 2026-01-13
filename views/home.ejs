@@ -147,6 +147,27 @@
                 box-shadow: 0 0 0 4px rgba(173, 198, 255, 0.2) !important;
             }
 
+            .modal-body input::placeholder,
+            .modal-body textarea::placeholder {
+                color: #909094 !important;
+                /* Màu xám trung tính Material chuẩn */
+                opacity: 1 !important;
+                /* ÉP nó phải hiện lên, đéo cho mờ */
+            }
+
+            /* Fix thêm cho mấy dòng input To/Subject nó có viền dưới nhẹ cho sang */
+            .modal-body input {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+            }
+
+            /* Đổi màu chữ lúc gõ cho nó rực rỡ */
+            .modal-body input,
+            .modal-body textarea {
+                color: #ffffff !important;
+                caret-color: var(--md-sys-color-primary);
+                /* Dấu nháy soạn thảo màu xanh cho khét */
+            }
+
             /* FIX CÁI NÚT CHỌN FILE LỎ */
             input[type="file"]::file-selector-button {
                 background-color: var(--md-sys-color-primary-container) !important;
