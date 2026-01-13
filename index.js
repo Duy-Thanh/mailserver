@@ -206,14 +206,19 @@ app.post('/send', requireLogin, upload.array('attachments'), async (req, res) =>
         // 2. GỬI MAIL ĐI
         await transporter.sendMail(mailOptions);
 
-        // 3. CHÉP VÀO HÒM SENT (Dùng build-in của nodemailer-mail-composer hoặc cách thủ công)
-        // Lưu ý: Để đơn giản và không lỗi toString, ta tạo connection và append nội dung text đơn giản
-        // hoặc dùng thư viện MailComposer. Nhưng ở đây tao cho mày cách an toàn nhất:
+        // 3. CHÉP VÀO HÒM SENT
         const connection = await imaps.connect(getImapConfig(req.session.user, req.session.pass));
 
-        // Tạo nội dung thô để lưu hòm Sent (Tránh lỗi .message.toString())
-        const rawContent = `To: ${to}\r\nSubject: ${subject}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n${message}`;
+        // ĐM THÀNH, PHẢI CÓ DÒNG NÀY NÓ MỚI HẾT CHỬI "No mailbox specified"
+        await connection.openBox('Sent');
 
+        // Tạo nội dung thô đơn giản để lưu
+        let rawContent = `To: ${to}\r\nSubject: ${subject}\r\nContent-Type: text/html; charset=utf-8\r\n\r\n${message}`;
+        if (mailAttachments.length > 0) {
+            rawContent += `<br><br>--- Attachments: ${mailAttachments.map(a => a.filename).join(', ')} ---`;
+        }
+
+        // Bây giờ mới append vào được này
         await connection.append(rawContent, { box: 'Sent', flags: ['\\Seen'] });
         await connection.end();
 

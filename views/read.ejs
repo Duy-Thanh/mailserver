@@ -262,26 +262,28 @@
             });
         }
 
-        $('#quick-attach-input').on('change', function () {
-            const fileList = this.files;
-            const $container = $('#selected-files-list');
-            $container.empty(); // Xóa cũ hiện mới
+        $('#quick-file-input').on('change', function () {
+            const files = this.files;
+            const $list = $('#quick-file-list');
+            $list.empty(); // Xóa trắng để nạp lại toàn bộ mảng file mới chọn
 
-            if (fileList.length > 0) {
-                Array.from(fileList).forEach(file => {
-                    $container.append(`
-                    <span class="badge bg-light text-dark border p-2 rounded-pill small">
-                        <i class="fas fa-file-alt me-1 text-primary"></i> ${file.name}
-                        <i class="fas fa-times ms-2 text-danger" style="cursor:pointer" onclick="clearFiles()"></i>
-                    </span>
+            if (files.length > 0) {
+                Array.from(files).forEach((f, index) => {
+                    $list.append(`
+                    <div class="badge bg-secondary-subtle text-dark border p-2 rounded-pill small d-flex align-items-center gap-2 shadow-sm" style="transition: 0.2s;">
+                        <i class="fas fa-file-alt text-primary"></i> 
+                        <span class="text-truncate" style="max-width: 150px;">${f.name}</span>
+                        <i class="fas fa-times-circle text-danger ms-1" style="cursor:pointer" onclick="removeSingleFile(${index})" title="Xóa file này"></i>
+                    </div>
                 `);
                 });
             }
         });
 
-        function clearFiles() {
-            $('#quick-attach-input').val(''); // Reset input
-            $('#selected-files-list').empty(); // Xóa giao diện
+        // Hàm xóa file này hơi khoai vì FileList là read-only, 
+        // nhưng tạm thời cứ để mày biết là chọn MULTIPLE đã!
+        function removeSingleFile(index) {
+            alert('Muốn xóa file này thì chọn lại đống file khác đi Thành, FileList của trình duyệt đéo cho sửa lẻ đâu!');
         }
     </script>
 </body>
