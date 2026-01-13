@@ -40,12 +40,19 @@
                 border-color: var(--md-surface-variant) !important;
             }
 
-            .email-header {
-                border-bottom-color: var(--md-surface-variant) !important;
+            /* ĐM THÀNH, PHẢI VẢ THẰNG NÀY NÀY! */
+            .text-dark,
+            .email-subject,
+            .fw-bold {
+                color: var(--md-on-surface) !important;
             }
 
-            .email-subject {
-                color: var(--md-on-surface) !important;
+            .text-muted {
+                color: #909094 !important;
+            }
+
+            .email-header {
+                border-bottom-color: var(--md-surface-variant) !important;
             }
 
             .email-body {
@@ -56,7 +63,7 @@
                 color: var(--md-primary) !important;
             }
 
-            /* FIX CÁI CARD REPLY CHO NÓ KHỎI TRẮNG ỞN */
+            /* REPLY BOX DARK */
             .reply-container {
                 background-color: #1e2025 !important;
             }
@@ -71,6 +78,12 @@
                 color: white !important;
             }
 
+            /* CHỮ TRONG QUOTED TEXT (MÀY TEST ĐI) */
+            blockquote {
+                border-left-color: var(--md-outline) !important;
+                color: #909094 !important;
+            }
+
             /* ATTACHMENT CHIPS DARK */
             .attachment-chip {
                 background-color: #2b2b2f !important;
@@ -82,27 +95,16 @@
                 background-color: #3b3f46 !important;
             }
 
-            .attachment-chip .text-dark {
-                color: #e3e2e6 !important;
-            }
-
             .bg-primary-subtle {
-                background-color: rgba(0, 86, 214, 0.2) !important;
+                background-color: rgba(173, 198, 255, 0.1) !important;
             }
 
-            .text-dark {
-                color: var(--md-on-surface) !important;
-            }
-
-            .btn-m3-icon {
-                color: var(--md-on-surface) !important;
-            }
-
-            .btn-m3-icon:hover {
-                background-color: rgba(255, 255, 255, 0.1) !important;
+            .text-primary {
+                color: var(--md-primary) !important;
             }
         }
 
+        /* CSS GỐC CỦA MÀY GIỮ NGUYÊN BÊN DƯỚI ĐỂ CHẠY LIGHT MODE */
         body {
             background-color: var(--md-surface);
             color: var(--md-on-surface);
@@ -110,7 +112,6 @@
             padding-bottom: 50px;
         }
 
-        /* NÚT BACK VÀ ACTION TRÊN CÙNG */
         .top-bar {
             margin: 20px 0;
         }
