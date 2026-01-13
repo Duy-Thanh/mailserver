@@ -350,7 +350,7 @@
 
         function showSnackbar(msg) {
             const id = Date.now();
-            $('#snackbar-container').append(`<div class="m3-snackbar" id="sb-${id}"><i class="fas fa-info-circle"></i>${msg}</div>`);
+            $('#snackbar-container').append(`<div class="m3-snackbar" id="sb-${id}"><i class="fas fa-info-circle me-2"></i>${msg}</div>`);
             setTimeout(() => $(`#sb-${id}`).fadeOut(() => $(`#sb-${id}`).remove()), 4000);
         }
 
@@ -358,50 +358,60 @@
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('msg')) showSnackbar(urlParams.get('msg'));
 
-            const boxFromUrl = (urlParams.get('box') || 'INBOX').toUpperCase();
+            // Mặc định nạp INBOX
+            const boxFromUrl = (urlParams.get('box') || 'INBOX');
             loadEmails(boxFromUrl);
             setInterval(() => loadEmails(currentBox), 30000);
         });
 
         function loadEmails(boxName) {
-            const targetBox = boxName.toUpperCase();
-            currentBox = targetBox;
-            $('#current-box-title').text(targetBox.charAt(0) + targetBox.slice(1).toLowerCase());
+            // ĐM THÀNH, GIỮ NGUYÊN BOXNAME ĐỂ TRÁNH LỖI IMAP KHÔNG TÌM THẤY HÒM
+            currentBox = boxName;
+            $('#current-box-title').text(boxName);
 
             $('.nav-link').removeClass('active');
+            // Active đúng tab dựa trên text (không quan tâm hoa thường)
             $('.nav-link').each(function () {
-                if ($(this).text().trim().toUpperCase().includes(targetBox)) $(this).addClass('active');
+                if ($(this).text().trim().toLowerCase().includes(boxName.toLowerCase())) $(this).addClass('active');
             });
 
-            $.get(`/api/emails?box=${targetBox}&_=${Date.now()}`, function (data) {
+            // Thêm timestamp để tránh cache trình duyệt vớ vẩn
+            $.get(`/api/emails?box=${boxName}&_=${Date.now()}`, function (data) {
                 let $list = $('#email-list').empty();
-                if (targetBox === 'INBOX') {
+
+                if (boxName.toUpperCase() === 'INBOX') {
                     const unread = data.filter(m => !m.seen).length;
                     unread > 0 ? $('#unread-count').text(unread).removeClass('d-none') : $('#unread-count').addClass('d-none');
                 }
 
                 if (!data || data.length === 0) {
-                    $list.html('<div class="p-5 text-center text-muted">No messages found.</div>');
+                    $list.html(`<div class="p-5 text-center text-muted">Hòm thư ${boxName} trống rỗng</div>`);
                 } else {
                     data.forEach(mail => {
-                        const contact = (targetBox === 'SENT') ? `To: ${mail.to || 'Unknown'}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
-                        const initial = contact.replace('To: ', '').charAt(0).toUpperCase();
-                        const time = new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        // Logic hiển thị người gửi/người nhận chuẩn bài
+                        let contact = (boxName.toUpperCase() === 'SENT') ? `To: ${mail.to || 'Unknown'}` : (mail.from ? mail.from.replace(/<.*>/, '') : 'Unknown');
+
+                        // Lấy chữ cái đầu làm Avatar, bỏ qua mấy cái ký tự rác
+                        let initial = contact.replace('To: ', '').trim().charAt(0).toUpperCase() || '?';
+                        let time = new Date(mail.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
                         $list.append(`
-                            <div class="email-item ${mail.seen ? '' : 'unseen'}" onclick="window.location='/read/${mail.id}'">
-                                <div class="avatar-circle">${initial}</div>
-                                <div class="flex-grow-1 overflow-hidden">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <span class="email-title fw-bold">${contact}</span>
-                                        <span class="email-date ${mail.seen ? 'text-muted' : 'text-primary'}">${time}</span>
-                                    </div>
-                                    <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
+                        <div class="email-item ${mail.seen ? '' : 'unseen'}" onclick="window.location='/read/${mail.id}'">
+                            <div class="avatar-circle">${initial}</div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="email-title ${mail.seen ? '' : 'fw-bold'}">${contact}</span>
+                                    <span class="email-date ${mail.seen ? 'text-muted' : 'text-primary fw-bold'}">${time}</span>
                                 </div>
+                                <div class="email-snippet text-truncate">${mail.subject || '(No Subject)'}</div>
                             </div>
-                        `);
+                        </div>
+                    `);
                     });
                 }
+            }).fail(function (xhr) {
+                showSnackbar(`Lỗi 500 rồi Thành ơi! Check xem hòm ${boxName} có tồn tại đéo đâu!`);
+                $('#email-list').html(`<div class="alert alert-danger m-4">Server chửi: ${xhr.responseText || 'Internal Server Error'}</div>`);
             });
         }
     </script>
